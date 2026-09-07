@@ -1,0 +1,53 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      - name: Typecheck
+        run: npx tsc --noEmit
+
+      - name: Lint
+        run: npm run lint
+
+      # Regenerates tokens and the registry, then verifies every dependency resolves,
+      # every registry dependency exists, and every CSS variable a component uses is
+      # carried by the theme.
+      - name: Build design system
+        run: npm run build:ds
+
+      # The registry is committed because consumers fetch it from the repository. If a
+      # component changed without the registry being rebuilt, the published item no longer
+      # matches its source -- and the failure would surface in someone else's project, not
+      # here. This is the step that stops that.
+      - name: Registry is up to date
+        run: |
+          if [ -n "$(git status --porcelain public/registry src/app/globals.css)" ]; then
+            echo "Generated output is stale. Run 'npm run build:ds' and commit the result."
+            git --no-pager diff --stat public/registry src/app/globals.css
+            exit 1
+          fi
+
+      - run: npx playwright install --with-deps chromium
+
+      # Storybook stories run in a real browser with the a11y addon at 'error', so a
+      # violation fails the build rather than being noted in a panel nobody opens.
+      - name: Test (Storybook + accessibility)
+        run: npx vitest run --project=storybook
+
+      - name: Build
+        run: npx next build
