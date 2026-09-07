@@ -5,9 +5,16 @@ All notable changes to the Stark Design System are recorded here.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and the
 project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-**Consumers should pin a tag, not `main`.** The registry serves whatever is committed, so
-tracking `main` means a component can change under a project without anything in that
-project having changed.
+**Consumers should pin a version, not `main`.** Two paths serve every item:
+
+- `https://stark-design-system.vercel.app/registry/{name}.json` always reflects the latest
+  deploy. Convenient, and it means a component can change under a project without anything
+  in that project having changed.
+- `https://stark-design-system.vercel.app/registry/v0.4.0/{name}.json` is written once per
+  release and never rewritten. Point `components.json` at that one.
+
+A git tag pins this repository; it does not pin what `shadcn add` downloads into someone
+else's app. The versioned path is what does.
 
 ## [0.4.0] - 2026-09-07
 
@@ -18,10 +25,27 @@ project having changed.
   `http://localhost:3100`, so installing no longer requires the dev server or this checkout.
   All 32 items were fetched over HTTPS and validated after deploying: every one carries a
   `$schema`, non-empty file content, and registry dependencies that resolve.
+- **A pinned registry path.** Every item is now written twice: to `/registry/<name>.json`,
+  which tracks the latest deploy, and to `/registry/v<version>/<name>.json`, which is
+  written once per release and never rewritten. The floating path was the only one that
+  existed, which made "pin a tag" advice a consumer could not act on -- a git tag pins this
+  repository, not what `shadcn add` downloads into someone else's app. The registry index
+  also carries its `version` and a real `homepage`; `homepage` had been an empty string.
 - **`vercel.json`** sets the headers the registry needs to be consumed from elsewhere:
   `Access-Control-Allow-Origin: *`, an explicit JSON content type, and
   `s-maxage=60, stale-while-revalidate=300` so the CDN serves it without going stale for
   longer than a minute.
+
+### Changed
+
+- **Six devDependencies were pinned from `latest`** -- `vitest`, `vite`, `playwright`,
+  `@vitest/coverage-v8`, `@vitest/browser-playwright` and `@chromatic-com/storybook`. A
+  project telling its own consumers to pin a version should not float its toolchain: a
+  `latest` specifier means a clean install can pick up a major version and fail for reasons
+  nothing in the repository changed. Pinned to the versions already installed, so the
+  resolved tree is byte-identical today.
+- **`package.json` version is 0.4.0**, matching the changelog. It had drifted at 0.1.0
+  across three releases, and the versioned registry path is generated from it.
 
 ### Notes
 

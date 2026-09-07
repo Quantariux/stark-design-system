@@ -59,6 +59,10 @@ const SCHEMA = 'https://ui.shadcn.com/schema/registry-item.json';
  */
 const AMBIENT = new Set(['react', 'react-dom', 'next']);
 
+const pkg = require('../package.json');
+const VERSION = pkg.version;
+const HOMEPAGE = 'https://stark-design-system.vercel.app';
+
 /**
  * Comments, removed before imports are read.
  *
@@ -212,6 +216,23 @@ function build() {
   }
   fs.mkdirSync(registryDir, { recursive: true });
 
+  /*
+   * Every item is written twice: to /registry/<name>.json, which always reflects the latest
+   * deploy, and to /registry/v<version>/<name>.json, which never changes again.
+   *
+   * Without the second path, "pin a tag" is advice a consumer cannot act on. A git tag pins
+   * this repository; it does not pin what `shadcn add` downloads into someone else's app,
+   * because that comes from a URL serving whatever was deployed last. The versioned path is
+   * the only thing here a project can depend on and expect to stay put.
+   */
+  const versionedDir = path.join(registryDir, `v${VERSION}`);
+  fs.mkdirSync(versionedDir, { recursive: true });
+
+  const emit = (file, contents) => {
+    writeFileRetrying(path.join(registryDir, file), contents);
+    writeFileRetrying(path.join(versionedDir, file), contents);
+  };
+
   const components = fs
     .readdirSync(uiDir)
     .filter((file) => file.endsWith('.tsx'))
@@ -222,15 +243,12 @@ function build() {
   const problems = [];
   const index = [];
 
-  writeFileRetrying(path.join(registryDir, 'theme.json'), JSON.stringify(themeItem(), null, 2));
+  emit('theme.json', JSON.stringify(themeItem(), null, 2));
   index.push({ name: 'theme', type: 'registry:theme' });
 
   for (const component of components) {
     const item = registryItem(component);
-    writeFileRetrying(
-      path.join(registryDir, `${component.name}.json`),
-      JSON.stringify(item, null, 2)
-    );
+    emit(`${component.name}.json`, JSON.stringify(item, null, 2));
     index.push({
       name: component.name,
       type: 'registry:ui',
@@ -260,10 +278,7 @@ function build() {
       // A block depends on components, not on the theme directly -- they carry it.
       block.registryDependencies.delete('theme');
       const item = registryItem(block, 'registry:block');
-      writeFileRetrying(
-        path.join(registryDir, `${block.name}.json`),
-        JSON.stringify(item, null, 2)
-      );
+      emit(`${block.name}.json`, JSON.stringify(item, null, 2));
       index.push({
         name: block.name,
         type: 'registry:block',
@@ -288,16 +303,24 @@ function build() {
     }
   }
 
-  writeFileRetrying(
-    path.join(registryDir, 'registry.json'),
+  emit(
+    'registry.json',
     JSON.stringify(
-      { $schema: 'https://ui.shadcn.com/schema/registry.json', name: 'stark', homepage: '', items: index },
+      {
+        $schema: 'https://ui.shadcn.com/schema/registry.json',
+        name: 'stark',
+        homepage: HOMEPAGE,
+        version: VERSION,
+        items: index,
+      },
       null,
       2
     )
   );
 
-  console.log(`\nRegistry: ${index.length} items (components, blocks, theme) at /registry/registry.json`);
+  console.log(
+    `\nRegistry: ${index.length} items at /registry/ and pinned at /registry/v${VERSION}/`
+  );
 
   if (problems.length) {
     // Loud and non-zero: a registry that builds but ships a broken install is the exact

@@ -24,13 +24,23 @@ structure only** — they ship Radix. Port their layout onto these components.
    npx shadcn@latest add @stark/button
    ```
 
-   `@stark` is defined in `components.json` → `registries`, and points at
-   `https://stark-design-system.vercel.app/registry/{name}.json`. It is public and needs no
+   `@stark` is defined in `components.json` → `registries`. It is public and needs no
    token, so this works from any machine and any project — no `npm run dev` required.
 
-   The registry serves whatever is on `main`. A component can therefore change under a
-   project without anything in that project changing, which is why CHANGELOG.md tells
-   consumers to pin a tag.
+   Inside this repository `@stark` points at
+   `https://stark-design-system.vercel.app/registry/{name}.json`, which always serves the
+   latest deploy — correct here, because this repository *is* the latest deploy.
+
+   **In a consuming project, point it at the versioned path instead:**
+
+   ```
+   "registries": {
+     "@stark": "https://stark-design-system.vercel.app/registry/v0.4.0/{name}.json"
+   }
+   ```
+
+   That path is written once per release and never rewritten, so a component cannot change
+   under a project that did not ask for it. The floating path can, and eventually will.
 
 3. **If it does not exist anywhere**, build it on a Base UI primitive. Check
    `node_modules/@base-ui/react` for what is available; it has more than you expect
