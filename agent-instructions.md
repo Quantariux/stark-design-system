@@ -24,10 +24,13 @@ structure only** — they ship Radix. Port their layout onto these components.
    npx shadcn@latest add @stark/button
    ```
 
-   `@stark` is defined in `components.json` → `registries`. It currently points at
-   `http://localhost:3100/registry/{name}.json`, which works while `npm run dev` is
-   running. **When the registry is hosted, change that one line** — nothing else refers to
-   the URL.
+   `@stark` is defined in `components.json` → `registries`, and points at
+   `https://stark-design-system.vercel.app/registry/{name}.json`. It is public and needs no
+   token, so this works from any machine and any project — no `npm run dev` required.
+
+   The registry serves whatever is on `main`. A component can therefore change under a
+   project without anything in that project changing, which is why CHANGELOG.md tells
+   consumers to pin a tag.
 
 3. **If it does not exist anywhere**, build it on a Base UI primitive. Check
    `node_modules/@base-ui/react` for what is available; it has more than you expect

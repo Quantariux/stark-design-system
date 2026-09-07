@@ -9,6 +9,31 @@ project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 tracking `main` means a component can change under a project without anything in that
 project having changed.
 
+## [0.4.0] - 2026-09-07
+
+### Added
+
+- **The registry is hosted.** `@stark` now resolves to
+  `https://stark-design-system.vercel.app/registry/{name}.json` instead of
+  `http://localhost:3100`, so installing no longer requires the dev server or this checkout.
+  All 32 items were fetched over HTTPS and validated after deploying: every one carries a
+  `$schema`, non-empty file content, and registry dependencies that resolve.
+- **`vercel.json`** sets the headers the registry needs to be consumed from elsewhere:
+  `Access-Control-Allow-Origin: *`, an explicit JSON content type, and
+  `s-maxage=60, stale-while-revalidate=300` so the CDN serves it without going stale for
+  longer than a minute.
+
+### Notes
+
+- **`npx shadcn add` is currently broken upstream, for every registry including this one.**
+  The CLI resolves a base style before it fetches anything, and
+  `https://ui.shadcn.com/r/styles/*/theme.json` returns 404 for every style
+  (`new-york`, `default`, `base-nova`, and the `-v4` variants alike). It fails identically
+  by registry name and by direct item URL, in this repository and in a clean project, on
+  the current CLI and on the two versions it suggests falling back to. Nothing here fixes
+  it and nothing here caused it; the items themselves are served correctly and will install
+  as soon as that path returns.
+
 ## [0.3.0] - 2026-09-07
 
 A verification pass done in a real browser rather than against the source. Every item below
