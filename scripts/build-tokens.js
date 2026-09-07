@@ -1,6 +1,35 @@
 const fs = require('fs');
 const path = require('path');
 
+/**
+ * Write a file, retrying briefly when the OS says it is busy.
+ *
+ * `next dev` watches public/, and on Windows a watcher holding a handle makes a concurrent
+ * open fail with EBUSY, EPERM or a bare UNKNOWN. The build is correct and the input has not
+ * changed -- the write simply collided with a reader -- so failing the whole run means
+ * `npm run build:ds` breaks at random for anyone who has the dev server up, which is
+ * everyone working on the system. CI never sees it, which is what makes it worth handling
+ * here rather than leaving as folklore.
+ *
+ * A genuine error (bad path, no permission, full disk) still throws: only the contention
+ * codes are retried, and only for about a second.
+ */
+const BUSY = new Set(['EBUSY', 'EPERM', 'UNKNOWN', 'EACCES']);
+
+function writeFileRetrying(file, contents) {
+  const deadline = Date.now() + 1000;
+  for (;;) {
+    try {
+      fs.writeFileSync(file, contents, 'utf8');
+      return;
+    } catch (error) {
+      if (!BUSY.has(error.code) || Date.now() > deadline) throw error;
+      // Synchronous: the build script is a straight line and has nothing else to do.
+      Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, 25);
+    }
+  }
+}
+
 const tokensPath = path.join(__dirname, '../tokens.json');
 const cssPath = path.join(__dirname, '../src/app/globals.css');
 
@@ -106,7 +135,7 @@ function generateCSS() {
   css += `  body {\n    @apply bg-background text-foreground;\n  }\n`;
   css += `}\n`;
 
-  fs.writeFileSync(cssPath, css, 'utf8');
+  writeFileRetrying(cssPath, css, 'utf8');
   console.log('Successfully generated globals.css from tokens.json');
 }
 

@@ -9,6 +9,65 @@ project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 tracking `main` means a component can change under a project without anything in that
 project having changed.
 
+## [0.3.0] - 2026-09-07
+
+A verification pass done in a real browser rather than against the source. Every item below
+was measured on the rendered page; several had been passing their tests for the wrong
+reason.
+
+### Fixed
+
+- **Storybook never loaded `globals.css`.** No token, font or radius reached any story:
+  buttons rendered at 21px with square corners on `rgb(240,240,240)`, and `--primary`
+  resolved to nothing. This is the single reason the system looked, in the reviewer's
+  words, generic. The a11y suite passed throughout because there were no colours to
+  measure -- adding the import took it from 80 passing to 13 failures, all real.
+- **`tabs.tsx` matched an orientation attribute Base UI does not emit.** Twelve selectors
+  used `data-horizontal:` / `data-vertical:` against Base UI's `data-orientation="..."`,
+  so a horizontal tab strip rendered vertically.
+- **Four contrast failures at the token level**, not per component: `muted-foreground` on
+  `muted` measured 4.39:1, and `destructive` as text on its own 10% tint measured 3.29:1
+  -- both just under AA, which is exactly the range that survives review by eye.
+  `success` and `warning` then landed at 4.38 and 4.39 and were darkened a further ramp
+  step. Every value now clears 4.5:1 on its tint, on white, and as a solid surface.
+- **Dark mode had an unreadable error toast.** `destructive` in dark mode was `#7f1d1d`, a
+  background colour, so `text-destructive` was near-invisible on a dark surface. Making it
+  legible (`#f87171`) then broke the solid `bg-destructive text-destructive-foreground`
+  toast at 2.2:1. A role used both as text and as a surface needs its foreground to flip
+  per theme; dark's is now `#450a0a`, measured at 5.84:1 in the browser.
+- **`CardTitle`'s size could not be overridden on a small card.** `group-data-[size=sm]/card:text-sm`
+  is not a font-size conflict tailwind-merge can resolve, so a passed `text-2xl` survived
+  the merge and lost on specificity -- silently. Dashboard metrics rendered at 13px, the
+  same size as their own labels. The size now comes from `--card-title-size`, which merges.
+- **A comment could become an npm dependency.** `build-registry.js` derived dependencies by
+  regexing `from "..."` over raw source, so prose containing that shape was published as a
+  package name in a registry item -- an uninstallable component in someone else's project,
+  with nothing failing here. Comments are stripped before imports are read.
+- **`CommandEmpty` reserved 48px of blank space while results were showing.** Its padding
+  is now collapsed with `empty:py-0` rather than `display:none`, which would stop the
+  `role="status"` live region announcing.
+- **The search block's pagination contradicted its own results** -- pages 1, 2, ... 9 with
+  Next enabled beside the words "Showing 0 of 8". It is now derived from the results,
+  hidden below two pages, and clamped when filtering strands the reader past the end. The
+  result count no longer duplicates the empty state, which was announcing it twice.
+- **The dashboard shipped shadcn's demo dataset** ($45,231.89 / +20.1% / 2,350 / 12,234 /
+  573), which is recognisable on sight and the most direct reason the page read as
+  generated. Replaced, and the tiles now separate direction from sentiment: rising failed
+  payments is an up arrow in red, not green.
+- **`layout.tsx` still carried the create-next-app metadata** -- every page titled "Create
+  Next App".
+- **`npm run build:ds` failed at random while the dev server was running.** `next dev`
+  watches `public/`, and on Windows its handle makes a concurrent open fail with a bare
+  `UNKNOWN` -- roughly two runs in three. The generated output was fine; the write had
+  simply collided with a reader. Writes now retry for a second on the contention codes
+  only. Measured 0 failures in 8 consecutive runs with the dev server up.
+
+### Added
+
+- **`success` and `warning` colour roles**, light and dark, each with a `-foreground`, plus
+  matching `Badge` variants and stories that measure them. A palette that could say "this
+  failed" but not "this succeeded" pushed every other status into grey.
+
 ## [0.2.0] — 2026-09-07
 
 ### Added

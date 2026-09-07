@@ -304,6 +304,7 @@
       "name": "dashboard",
       "type": "registry:block",
       "dependencies": [
+        "cn",
         "lucide-react"
       ],
       "registryDependencies": [

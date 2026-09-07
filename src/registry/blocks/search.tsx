@@ -14,7 +14,6 @@ import {
 import {
   Pagination,
   PaginationContent,
-  PaginationEllipsis,
   PaginationItem,
   PaginationLink,
   PaginationNext,
@@ -46,8 +45,17 @@ const catalogue = [
   { title: "Motion", group: "Token", description: "Durations and easings." },
 ]
 
+/*
+ * Pagination is derived, never decorative. The pager here previously ran to page 9 beside
+ * the words "Showing 0 of 8" -- a control that contradicted the data next to it, and gave
+ * someone nine pages to click through an empty result set. If the page count is not
+ * computed from the results, the component is a picture of a pager rather than a pager.
+ */
+const PAGE_SIZE = 5
+
 export function SearchBlock() {
   const [query, setQuery] = React.useState("")
+  const [page, setPage] = React.useState(1)
 
   const results = React.useMemo(() => {
     const needle = query.trim().toLowerCase()
@@ -59,6 +67,13 @@ export function SearchBlock() {
     )
   }, [query])
 
+  const pageCount = Math.max(1, Math.ceil(results.length / PAGE_SIZE))
+  // Filtering can strand the reader past the end of the new result set, so clamp rather
+  // than trusting the stored page.
+  const current = Math.min(page, pageCount)
+  const start = (current - 1) * PAGE_SIZE
+  const visible = results.slice(start, start + PAGE_SIZE)
+
   return (
     <div className="mx-auto flex w-full max-w-2xl flex-1 flex-col gap-6 p-6">
       <div>
@@ -68,12 +83,15 @@ export function SearchBlock() {
         </p>
       </div>
 
-      <Command items={results.map((entry) => entry.title)}>
+      <Command items={visible.map((entry) => entry.title)}>
         <div className="overflow-hidden rounded-lg bg-card ring-1 ring-foreground/10">
           <CommandInput
             placeholder="Search the system..."
             value={query}
-            onChange={(event) => setQuery(event.target.value)}
+            onChange={(event) => {
+              setQuery(event.target.value)
+              setPage(1)
+            }}
           />
           {/*
             Outside the list, not inside it. CommandList renders role="listbox", and a
@@ -88,7 +106,7 @@ export function SearchBlock() {
             </p>
           </CommandEmpty>
           <CommandList>
-            {results.map((entry) => (
+            {visible.map((entry) => (
               <CommandItem key={entry.title} value={entry.title}>
                 <div className="flex min-w-0 flex-1 items-center justify-between gap-3">
                   <span className="min-w-0">
@@ -104,36 +122,67 @@ export function SearchBlock() {
         </div>
       </Command>
 
-      <p className="text-sm text-muted-foreground" aria-live="polite">
-        Showing {results.length} of {catalogue.length}
-      </p>
+      {/* Say how many, always. "Showing 1–5 of 8" tells someone whether to refine or to
+          page; "Results" tells them nothing. */}
+      {/* Only when there are results. CommandEmpty is itself a role="status" live region,
+          so repeating the miss here says it twice on screen and announces it twice to a
+          screen reader. */}
+      {results.length > 0 && (
+        <p className="text-sm text-muted-foreground" aria-live="polite">
+          {`Showing ${start + 1}–${start + visible.length} of ${results.length}`}
+        </p>
+      )}
 
-      <Separator />
+      {/* One page is not a pager. Rendering it anyway is how a control ends up offering
+          navigation that does nothing. */}
+      {pageCount > 1 && (
+        <>
+          <Separator />
 
-      <Pagination>
-        <PaginationContent>
-          <PaginationItem>
-            <PaginationPrevious href="#" />
-          </PaginationItem>
-          <PaginationItem>
-            <PaginationLink href="#" isActive>
-              1
-            </PaginationLink>
-          </PaginationItem>
-          <PaginationItem>
-            <PaginationLink href="#">2</PaginationLink>
-          </PaginationItem>
-          <PaginationItem>
-            <PaginationEllipsis />
-          </PaginationItem>
-          <PaginationItem>
-            <PaginationLink href="#">9</PaginationLink>
-          </PaginationItem>
-          <PaginationItem>
-            <PaginationNext href="#" />
-          </PaginationItem>
-        </PaginationContent>
-      </Pagination>
+          <Pagination>
+            <PaginationContent>
+              <PaginationItem>
+                <PaginationPrevious
+                  href="#"
+                  aria-disabled={current === 1}
+                  className={current === 1 ? "pointer-events-none opacity-50" : undefined}
+                  onClick={(event) => {
+                    event.preventDefault()
+                    setPage(current - 1)
+                  }}
+                />
+              </PaginationItem>
+              {Array.from({ length: pageCount }, (_, index) => index + 1).map((number) => (
+                <PaginationItem key={number}>
+                  <PaginationLink
+                    href="#"
+                    isActive={number === current}
+                    onClick={(event) => {
+                      event.preventDefault()
+                      setPage(number)
+                    }}
+                  >
+                    {number}
+                  </PaginationLink>
+                </PaginationItem>
+              ))}
+              <PaginationItem>
+                <PaginationNext
+                  href="#"
+                  aria-disabled={current === pageCount}
+                  className={
+                    current === pageCount ? "pointer-events-none opacity-50" : undefined
+                  }
+                  onClick={(event) => {
+                    event.preventDefault()
+                    setPage(current + 1)
+                  }}
+                />
+              </PaginationItem>
+            </PaginationContent>
+          </Pagination>
+        </>
+      )}
     </div>
   )
 }

@@ -56,6 +56,9 @@ differently on every screen.
 - **Never** hard-code a hex colour. Add it to `tokens.json`.
 - **Do** use semantic roles: `bg-primary`, `text-muted-foreground`, `border-border`,
   `bg-card`, `bg-destructive`.
+- **Do** reach for the outcome roles rather than grey: `success`, `warning`, `destructive`.
+  A `<Badge variant="success">` is the difference between a status column that reads at a
+  glance and four identical pills. Never use colour as the only signal.
 - **Do** use the scales: `p-4`/`gap-6` (spacing), `rounded-md`/`rounded-lg` (radius),
   `text-sm`/`text-lg` (type), `shadow-sm` (elevation).
 - Motion uses `var(--duration-base)` and `var(--ease-out)`.

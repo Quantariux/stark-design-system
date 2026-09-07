@@ -85,7 +85,15 @@ function CommandEmpty({ className, ...props }: ComboboxPrimitive.Empty.Props) {
   return (
     <ComboboxPrimitive.Empty
       data-slot="command-empty"
-      className={cn("py-6 text-center text-sm text-muted-foreground", className)}
+      className={cn(
+        // Base UI keeps this mounted so its live region can announce the result count, so
+        // when there ARE matches it sits in the layout holding nothing and reserving 48px
+        // of blank space above the list. Collapse the padding rather than hiding it:
+        // display:none on a live region stops it announcing, which is the reason the
+        // element is kept mounted in the first place.
+        "py-6 text-center text-sm text-muted-foreground empty:py-0",
+        className
+      )}
       {...props}
     />
   )

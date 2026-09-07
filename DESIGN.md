@@ -11,6 +11,13 @@ We embrace a **Minimalist and Functional** aesthetic:
   `radius-lg` 0.375rem (the base), `radius-xl` 0.5rem. Use the Tailwind utilities
   (`rounded-md`, `rounded-lg`) rather than the raw values.
 - **Typography**: Geist Sans for UI, Geist Mono for code.
+- **Status colour**: four outcome roles -- `success`, `warning`, `destructive`, and plain
+  `secondary` for a neutral or reversed state. Grayscale is the default, but an outcome is
+  the one thing greyscale cannot express: a palette with `destructive` and no `success`
+  forces every non-failure into grey, and a status column stops carrying information.
+  Each role has a `-foreground` for use as a solid surface; as text, use the role on a
+  `/10` tint of itself (`bg-success/10 text-success`), which is what the badge variants do.
+  Colour is never the only channel -- always state the status in words as well.
 
 All tokens are defined in `tokens.json`, which is the single source for both
 `src/app/globals.css` (via `npm run build:tokens`) and the registry's `theme.json` (via

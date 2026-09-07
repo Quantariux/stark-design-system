@@ -22,6 +22,8 @@ export const Variants: Story = {
       <Badge variant="secondary">Secondary</Badge>
       <Badge variant="outline">Outline</Badge>
       <Badge variant="ghost">Ghost</Badge>
+      <Badge variant="success">Success</Badge>
+      <Badge variant="warning">Warning</Badge>
       <Badge variant="destructive">Destructive</Badge>
     </div>
   ),
@@ -30,15 +32,20 @@ export const Variants: Story = {
 /**
  * A badge is a label, not a control. If it needs to be clicked it is a button — status
  * that responds to a click is the most common way a badge misleads someone.
+ *
+ * Four outcomes, four colours. Where a system has no `success` role every non-failure state
+ * collapses into grey, and a status column stops carrying information at a glance. Colour is
+ * never the only channel: each badge states its status in words as well.
  */
 export const AsStatus: Story = {
   render: () => (
     <div className="flex flex-wrap items-center gap-2">
-      <Badge variant="secondary">
+      <Badge variant="success">
         <CheckIcon />
         Paid
       </Badge>
-      <Badge variant="outline">Pending</Badge>
+      <Badge variant="warning">Pending</Badge>
+      <Badge variant="secondary">Refunded</Badge>
       <Badge variant="destructive">Failed</Badge>
     </div>
   ),

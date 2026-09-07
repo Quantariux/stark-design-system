@@ -16,6 +16,35 @@
 const fs = require('fs');
 const path = require('path');
 
+/**
+ * Write a file, retrying briefly when the OS says it is busy.
+ *
+ * `next dev` watches public/, and on Windows a watcher holding a handle makes a concurrent
+ * open fail with EBUSY, EPERM or a bare UNKNOWN. The build is correct and the input has not
+ * changed -- the write simply collided with a reader -- so failing the whole run means
+ * `npm run build:ds` breaks at random for anyone who has the dev server up, which is
+ * everyone working on the system. CI never sees it, which is what makes it worth handling
+ * here rather than leaving as folklore.
+ *
+ * A genuine error (bad path, no permission, full disk) still throws: only the contention
+ * codes are retried, and only for about a second.
+ */
+const BUSY = new Set(['EBUSY', 'EPERM', 'UNKNOWN', 'EACCES']);
+
+function writeFileRetrying(file, contents) {
+  const deadline = Date.now() + 1000;
+  for (;;) {
+    try {
+      fs.writeFileSync(file, contents, 'utf8');
+      return;
+    } catch (error) {
+      if (!BUSY.has(error.code) || Date.now() > deadline) throw error;
+      // Synchronous: the build script is a straight line and has nothing else to do.
+      Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, 25);
+    }
+  }
+}
+
 const root = path.join(__dirname, '..');
 const uiDir = path.join(root, 'src/components/ui');
 const blocksDir = path.join(root, 'src/registry/blocks');
@@ -30,12 +59,30 @@ const SCHEMA = 'https://ui.shadcn.com/schema/registry-item.json';
  */
 const AMBIENT = new Set(['react', 'react-dom', 'next']);
 
+/**
+ * Comments, removed before imports are read.
+ *
+ * Dependencies are derived by scanning for `from "..."`, and prose is full of that shape --
+ * a comment distinguishing `"failed"` from everything else yields a dependency on a package
+ * named after the sentence. Nothing in the build fails: the phantom is written into the
+ * published registry item and surfaces as an uninstallable component in someone else's
+ * project. Stripping comments first is what stops a sentence becoming a dependency.
+ *
+ * String and template literals are preserved, so a URL containing `//` inside a quote does
+ * not swallow the rest of the line.
+ */
+function stripComments(source) {
+  const tokens = /("(?:[^"\\\n]|\\.)*"|'(?:[^'\\\n]|\\.)*'|`(?:[^`\\]|\\.)*`)|\/\*[\s\S]*?\*\/|\/\/[^\n]*/g;
+  return source.replace(tokens, (match, quoted) => quoted || ' ');
+}
+
 /** Every `from "..."` specifier in a source file, including type-only imports. */
 function importsOf(source) {
   const found = new Set();
   const pattern = /from\s+["']([^"']+)["']/g;
   let match;
-  while ((match = pattern.exec(source)) !== null) found.add(match[1]);
+  const code = stripComments(source);
+  while ((match = pattern.exec(code)) !== null) found.add(match[1]);
   return [...found];
 }
 
@@ -175,12 +222,12 @@ function build() {
   const problems = [];
   const index = [];
 
-  fs.writeFileSync(path.join(registryDir, 'theme.json'), JSON.stringify(themeItem(), null, 2));
+  writeFileRetrying(path.join(registryDir, 'theme.json'), JSON.stringify(themeItem(), null, 2));
   index.push({ name: 'theme', type: 'registry:theme' });
 
   for (const component of components) {
     const item = registryItem(component);
-    fs.writeFileSync(
+    writeFileRetrying(
       path.join(registryDir, `${component.name}.json`),
       JSON.stringify(item, null, 2)
     );
@@ -213,7 +260,7 @@ function build() {
       // A block depends on components, not on the theme directly -- they carry it.
       block.registryDependencies.delete('theme');
       const item = registryItem(block, 'registry:block');
-      fs.writeFileSync(
+      writeFileRetrying(
         path.join(registryDir, `${block.name}.json`),
         JSON.stringify(item, null, 2)
       );
@@ -241,7 +288,7 @@ function build() {
     }
   }
 
-  fs.writeFileSync(
+  writeFileRetrying(
     path.join(registryDir, 'registry.json'),
     JSON.stringify(
       { $schema: 'https://ui.shadcn.com/schema/registry.json', name: 'stark', homepage: '', items: index },
