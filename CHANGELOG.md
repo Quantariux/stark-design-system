@@ -32,9 +32,11 @@ else's app. The versioned path is what does.
   repository, not what `shadcn add` downloads into someone else's app. The registry index
   also carries its `version` and a real `homepage`; `homepage` had been an empty string.
 - **`vercel.json`** sets the headers the registry needs to be consumed from elsewhere:
-  `Access-Control-Allow-Origin: *`, an explicit JSON content type, and
-  `s-maxage=60, stale-while-revalidate=300` so the CDN serves it without going stale for
-  longer than a minute.
+  `Access-Control-Allow-Origin: *`, an explicit JSON content type, and two cache policies.
+  The floating path gets `s-maxage=60, stale-while-revalidate=300`, so it is served from
+  the CDN without going stale for longer than a minute. The versioned path gets
+  `max-age=31536000, immutable` -- it is written once and never rewritten, so revalidating
+  it would spend a request confirming something that cannot have changed.
 
 ### Changed
 
