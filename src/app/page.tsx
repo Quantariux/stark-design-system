@@ -1,7 +1,7 @@
 import Link from "next/link"
 
 import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
+import { buttonVariants } from "@/components/ui/button"
 import {
   Card,
   CardContent,
@@ -45,11 +45,21 @@ export default function Home() {
           26 components and 5 page blocks, distributed through a shadcn-compatible registry.
           Tokens are the single source for both the app stylesheet and the registry theme.
         </p>
+        {/*
+          Links, styled as buttons -- not Buttons rendering links.
+
+          Base UI's Button assumes a native <button>, and rendering an anchor through it
+          strips those semantics. More to the point these navigate, so they should be real
+          anchors: middle-click, open-in-new-tab and copy-link all work on an <a> and none
+          of them work on a button. This is the same pattern pagination.tsx uses.
+        */}
         <div className="flex flex-wrap gap-2">
-          <Button render={<Link href="/patterns/dashboard" />}>Browse patterns</Button>
-          <Button variant="outline" render={<a href="/registry/registry.json" />}>
+          <Link href="/patterns/dashboard" className={buttonVariants()}>
+            Browse patterns
+          </Link>
+          <a href="/registry/registry.json" className={buttonVariants({ variant: "outline" })}>
             Registry index
-          </Button>
+          </a>
         </div>
       </header>
 

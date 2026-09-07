@@ -37,6 +37,19 @@ check:registry` fails on exactly that.
   structure and layout only**. Port them onto our components and tokens; never install
   them directly, because they ship Radix.
 
+## Buttons and Links
+
+A button does something; a link goes somewhere. Choose by what happens, not by how it
+should look.
+
+- **Navigating?** Use `<Link>` or `<a>` with `className={buttonVariants(...)}`. Middle-click,
+  open-in-new-tab and copy-link all work on an anchor and none of them work on a button.
+- **Acting?** Use `<Button>`.
+
+Do **not** write `<Button render={<Link />}>`. Base UI's Button assumes a native `<button>`
+and warns at runtime that rendering anything else strips button semantics. `buttonVariants`
+exists for exactly this case — `pagination.tsx` uses it.
+
 ## Layout Patterns
 
 When building new screens, adhere to these structural patterns:

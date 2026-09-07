@@ -24,9 +24,9 @@ jobs:
       - name: Lint
         run: npm run lint
 
-      # Regenerates tokens and the registry, then verifies every dependency resolves,
-      # every registry dependency exists, and every CSS variable a component uses is
-      # carried by the theme.
+      # Regenerates tokens and the registry, then runs both checks: that every dependency
+      # and theme variable resolves, and that no source file uses a raw palette class, a
+      # hex literal, a Button-as-link, or a second primitive library.
       - name: Build design system
         run: npm run build:ds
 

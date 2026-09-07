@@ -9,6 +9,31 @@ project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 tracking `main` means a component can change under a project without anything in that
 project having changed.
 
+## [0.2.0] — 2026-09-07
+
+### Added
+
+- **`npm run check:usage`** — enforces the DESIGN.md rules against the source rather than
+  asking an agent to remember them: no raw Tailwind palette classes, no hex literals, no
+  `<Button render={<Link/>}>`, no second primitive library. Wired into `build:ds` and CI.
+- **Named registry** — `@stark` in `components.json`, so `npx shadcn add @stark/button`
+  works. One line to change when the registry is hosted; nothing else refers to the URL.
+- **Rewritten `agent-instructions.md`** — retrieval, tokens, forms, buttons-vs-links, and
+  a list of commands to *run* before claiming done, plus the three things only a person can
+  confirm (both themes, keyboard-only, empty and error states).
+- **`AGENTS.md` now describes the design system**, above the Next.js block that `next dev`
+  regenerates. It previously contained nothing about this repository.
+
+### Fixed
+
+- **`<Button render={<Link/>}>` on the home page.** Base UI warns at runtime that rendering
+  a non-`<button>` strips button semantics, and the result loses middle-click,
+  open-in-new-tab and copy-link. Both are now anchors styled with `buttonVariants()`, which
+  is the pattern `pagination.tsx` already used. The rule is in DESIGN.md and enforced by
+  `check:usage`.
+- **The last 13 generated story stubs.** Every story is now real; assertions went from 53
+  to 80, all passing with accessibility at `error`.
+
 ## [0.1.0] — 2026-09-07
 
 First tagged release. The system is installable: `npx shadcn add <registry>/button.json`

@@ -1,3 +1,24 @@
+# Stark Design System
+
+This repository **is** the design system. Before writing any UI here or in a project that
+consumes it:
+
+- **[agent-instructions.md](./agent-instructions.md)** — how to retrieve components, which
+  tokens to use, and the checks to run before claiming done.
+- **[DESIGN.md](./DESIGN.md)** — visual rules, component selection, layout patterns.
+
+Two things that are worth knowing before you touch anything:
+
+1. **The primitive layer is Base UI.** Do not add Radix, React Aria or HeroUI.
+   `npm run check:usage` fails if you do.
+2. **`tokens.json` is the only place a colour, space or radius is defined.** It generates
+   both `globals.css` and the registry theme, so a value written anywhere else exists in
+   one of them and not the other.
+
+Run `npm run build:ds` and `npx vitest run --project=storybook` before reporting success.
+
+---
+
 <!-- BEGIN:nextjs-agent-rules -->
 
 # This is NOT the Next.js you know

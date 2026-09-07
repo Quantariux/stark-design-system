@@ -12,7 +12,8 @@
     "build:tokens": "node scripts/build-tokens.js",
     "build:registry": "node scripts/build-registry.js",
     "check:registry": "node scripts/check-registry.js",
-    "build:ds": "npm run build:tokens && npm run build:registry && npm run check:registry"
+    "build:ds": "npm run build:tokens && npm run build:registry && npm run check:registry && npm run check:usage",
+    "check:usage": "node scripts/check-usage.js"
   },
   "dependencies": {
     "@base-ui/react": "^1.8.0",
