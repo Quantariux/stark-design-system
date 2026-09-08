@@ -145,7 +145,19 @@ function classify(specifier) {
  */
 function describe(file, dir = uiDir) {
   const name = file.replace(/\.tsx$/, '');
-  const content = fs.readFileSync(path.join(dir, file), 'utf8');
+  // Normalised to LF on the way in, deliberately.
+  //
+  // This content is shipped verbatim to consumers, and it used to be whatever the
+  // checkout happened to hold: CRLF on a Windows machine, LF on Linux. That made the
+  // generated registry depend on who ran the build, so "registry is up to date" could
+  // not be true on both at once -- it passed locally and failed in CI on files whose
+  // only difference was a carriage return inside the content string.
+  //
+  // A component's source is the same source on either platform, so the output should
+  // say so. LF is what the repository stores and what a shadcn registry should serve.
+  const content = fs
+    .readFileSync(path.join(dir, file), 'utf8')
+    .replace(/\r\n/g, '\n');
 
   const dependencies = new Set();
   const registryDependencies = new Set();
