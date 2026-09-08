@@ -1,0 +1,378 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry.json",
+  "name": "stark",
+  "homepage": "https://stark-design-system.vercel.app",
+  "version": "0.6.0",
+  "items": [
+    {
+      "name": "theme",
+      "type": "registry:theme"
+    },
+    {
+      "name": "alert",
+      "type": "registry:ui",
+      "dependencies": [
+        "class-variance-authority",
+        "cn"
+      ],
+      "registryDependencies": [
+        "https://stark-design-system.vercel.app/registry/v0.6.0/theme.json"
+      ]
+    },
+    {
+      "name": "avatar",
+      "type": "registry:ui",
+      "dependencies": [
+        "@base-ui/react",
+        "cn"
+      ],
+      "registryDependencies": [
+        "https://stark-design-system.vercel.app/registry/v0.6.0/theme.json"
+      ]
+    },
+    {
+      "name": "badge",
+      "type": "registry:ui",
+      "dependencies": [
+        "@base-ui/react",
+        "class-variance-authority",
+        "cn"
+      ],
+      "registryDependencies": [
+        "https://stark-design-system.vercel.app/registry/v0.6.0/theme.json"
+      ]
+    },
+    {
+      "name": "breadcrumb",
+      "type": "registry:ui",
+      "dependencies": [
+        "@base-ui/react",
+        "cn",
+        "lucide-react"
+      ],
+      "registryDependencies": [
+        "https://stark-design-system.vercel.app/registry/v0.6.0/theme.json"
+      ]
+    },
+    {
+      "name": "button",
+      "type": "registry:ui",
+      "dependencies": [
+        "@base-ui/react",
+        "class-variance-authority",
+        "cn"
+      ],
+      "registryDependencies": [
+        "https://stark-design-system.vercel.app/registry/v0.6.0/theme.json"
+      ]
+    },
+    {
+      "name": "card",
+      "type": "registry:ui",
+      "dependencies": [
+        "cn"
+      ],
+      "registryDependencies": [
+        "https://stark-design-system.vercel.app/registry/v0.6.0/theme.json"
+      ]
+    },
+    {
+      "name": "checkbox",
+      "type": "registry:ui",
+      "dependencies": [
+        "@base-ui/react",
+        "cn",
+        "lucide-react"
+      ],
+      "registryDependencies": [
+        "https://stark-design-system.vercel.app/registry/v0.6.0/theme.json"
+      ]
+    },
+    {
+      "name": "command",
+      "type": "registry:ui",
+      "dependencies": [
+        "@base-ui/react",
+        "cn",
+        "lucide-react"
+      ],
+      "registryDependencies": [
+        "https://stark-design-system.vercel.app/registry/v0.6.0/theme.json"
+      ]
+    },
+    {
+      "name": "dialog",
+      "type": "registry:ui",
+      "dependencies": [
+        "@base-ui/react",
+        "cn",
+        "lucide-react"
+      ],
+      "registryDependencies": [
+        "https://stark-design-system.vercel.app/registry/v0.6.0/button.json",
+        "https://stark-design-system.vercel.app/registry/v0.6.0/theme.json"
+      ]
+    },
+    {
+      "name": "dropdown-menu",
+      "type": "registry:ui",
+      "dependencies": [
+        "@base-ui/react",
+        "cn",
+        "lucide-react"
+      ],
+      "registryDependencies": [
+        "https://stark-design-system.vercel.app/registry/v0.6.0/theme.json"
+      ]
+    },
+    {
+      "name": "form",
+      "type": "registry:ui",
+      "dependencies": [
+        "@base-ui/react",
+        "cn"
+      ],
+      "registryDependencies": [
+        "https://stark-design-system.vercel.app/registry/v0.6.0/theme.json"
+      ]
+    },
+    {
+      "name": "input",
+      "type": "registry:ui",
+      "dependencies": [
+        "@base-ui/react",
+        "cn"
+      ],
+      "registryDependencies": [
+        "https://stark-design-system.vercel.app/registry/v0.6.0/theme.json"
+      ]
+    },
+    {
+      "name": "label",
+      "type": "registry:ui",
+      "dependencies": [
+        "cn"
+      ],
+      "registryDependencies": [
+        "https://stark-design-system.vercel.app/registry/v0.6.0/theme.json"
+      ]
+    },
+    {
+      "name": "pagination",
+      "type": "registry:ui",
+      "dependencies": [
+        "cn",
+        "lucide-react"
+      ],
+      "registryDependencies": [
+        "https://stark-design-system.vercel.app/registry/v0.6.0/button.json",
+        "https://stark-design-system.vercel.app/registry/v0.6.0/theme.json"
+      ]
+    },
+    {
+      "name": "popover",
+      "type": "registry:ui",
+      "dependencies": [
+        "@base-ui/react",
+        "cn"
+      ],
+      "registryDependencies": [
+        "https://stark-design-system.vercel.app/registry/v0.6.0/theme.json"
+      ]
+    },
+    {
+      "name": "progress",
+      "type": "registry:ui",
+      "dependencies": [
+        "@base-ui/react",
+        "cn"
+      ],
+      "registryDependencies": [
+        "https://stark-design-system.vercel.app/registry/v0.6.0/theme.json"
+      ]
+    },
+    {
+      "name": "radio-group",
+      "type": "registry:ui",
+      "dependencies": [
+        "@base-ui/react",
+        "cn"
+      ],
+      "registryDependencies": [
+        "https://stark-design-system.vercel.app/registry/v0.6.0/theme.json"
+      ]
+    },
+    {
+      "name": "select",
+      "type": "registry:ui",
+      "dependencies": [
+        "@base-ui/react",
+        "cn",
+        "lucide-react"
+      ],
+      "registryDependencies": [
+        "https://stark-design-system.vercel.app/registry/v0.6.0/theme.json"
+      ]
+    },
+    {
+      "name": "separator",
+      "type": "registry:ui",
+      "dependencies": [
+        "@base-ui/react",
+        "cn"
+      ],
+      "registryDependencies": [
+        "https://stark-design-system.vercel.app/registry/v0.6.0/theme.json"
+      ]
+    },
+    {
+      "name": "skeleton",
+      "type": "registry:ui",
+      "dependencies": [
+        "cn"
+      ],
+      "registryDependencies": [
+        "https://stark-design-system.vercel.app/registry/v0.6.0/theme.json"
+      ]
+    },
+    {
+      "name": "switch",
+      "type": "registry:ui",
+      "dependencies": [
+        "@base-ui/react",
+        "cn"
+      ],
+      "registryDependencies": [
+        "https://stark-design-system.vercel.app/registry/v0.6.0/theme.json"
+      ]
+    },
+    {
+      "name": "table",
+      "type": "registry:ui",
+      "dependencies": [
+        "cn"
+      ],
+      "registryDependencies": [
+        "https://stark-design-system.vercel.app/registry/v0.6.0/theme.json"
+      ]
+    },
+    {
+      "name": "tabs",
+      "type": "registry:ui",
+      "dependencies": [
+        "@base-ui/react",
+        "class-variance-authority",
+        "cn"
+      ],
+      "registryDependencies": [
+        "https://stark-design-system.vercel.app/registry/v0.6.0/theme.json"
+      ]
+    },
+    {
+      "name": "textarea",
+      "type": "registry:ui",
+      "dependencies": [
+        "cn"
+      ],
+      "registryDependencies": [
+        "https://stark-design-system.vercel.app/registry/v0.6.0/theme.json"
+      ]
+    },
+    {
+      "name": "toast",
+      "type": "registry:ui",
+      "dependencies": [
+        "@base-ui/react",
+        "cn",
+        "lucide-react"
+      ],
+      "registryDependencies": [
+        "https://stark-design-system.vercel.app/registry/v0.6.0/theme.json"
+      ]
+    },
+    {
+      "name": "tooltip",
+      "type": "registry:ui",
+      "dependencies": [
+        "@base-ui/react",
+        "cn"
+      ],
+      "registryDependencies": [
+        "https://stark-design-system.vercel.app/registry/v0.6.0/theme.json"
+      ]
+    },
+    {
+      "name": "dashboard",
+      "type": "registry:block",
+      "dependencies": [
+        "cn",
+        "lucide-react"
+      ],
+      "registryDependencies": [
+        "https://stark-design-system.vercel.app/registry/v0.6.0/badge.json",
+        "https://stark-design-system.vercel.app/registry/v0.6.0/button.json",
+        "https://stark-design-system.vercel.app/registry/v0.6.0/card.json",
+        "https://stark-design-system.vercel.app/registry/v0.6.0/table.json"
+      ]
+    },
+    {
+      "name": "detail",
+      "type": "registry:block",
+      "dependencies": [
+        "lucide-react"
+      ],
+      "registryDependencies": [
+        "https://stark-design-system.vercel.app/registry/v0.6.0/avatar.json",
+        "https://stark-design-system.vercel.app/registry/v0.6.0/badge.json",
+        "https://stark-design-system.vercel.app/registry/v0.6.0/breadcrumb.json",
+        "https://stark-design-system.vercel.app/registry/v0.6.0/button.json",
+        "https://stark-design-system.vercel.app/registry/v0.6.0/card.json",
+        "https://stark-design-system.vercel.app/registry/v0.6.0/separator.json",
+        "https://stark-design-system.vercel.app/registry/v0.6.0/tabs.json"
+      ]
+    },
+    {
+      "name": "onboarding",
+      "type": "registry:block",
+      "dependencies": [
+        "lucide-react"
+      ],
+      "registryDependencies": [
+        "https://stark-design-system.vercel.app/registry/v0.6.0/button.json",
+        "https://stark-design-system.vercel.app/registry/v0.6.0/card.json",
+        "https://stark-design-system.vercel.app/registry/v0.6.0/form.json",
+        "https://stark-design-system.vercel.app/registry/v0.6.0/input.json",
+        "https://stark-design-system.vercel.app/registry/v0.6.0/progress.json",
+        "https://stark-design-system.vercel.app/registry/v0.6.0/textarea.json"
+      ]
+    },
+    {
+      "name": "search",
+      "type": "registry:block",
+      "dependencies": [],
+      "registryDependencies": [
+        "https://stark-design-system.vercel.app/registry/v0.6.0/badge.json",
+        "https://stark-design-system.vercel.app/registry/v0.6.0/command.json",
+        "https://stark-design-system.vercel.app/registry/v0.6.0/pagination.json",
+        "https://stark-design-system.vercel.app/registry/v0.6.0/separator.json"
+      ]
+    },
+    {
+      "name": "settings",
+      "type": "registry:block",
+      "dependencies": [],
+      "registryDependencies": [
+        "https://stark-design-system.vercel.app/registry/v0.6.0/button.json",
+        "https://stark-design-system.vercel.app/registry/v0.6.0/card.json",
+        "https://stark-design-system.vercel.app/registry/v0.6.0/form.json",
+        "https://stark-design-system.vercel.app/registry/v0.6.0/input.json",
+        "https://stark-design-system.vercel.app/registry/v0.6.0/label.json",
+        "https://stark-design-system.vercel.app/registry/v0.6.0/separator.json",
+        "https://stark-design-system.vercel.app/registry/v0.6.0/switch.json",
+        "https://stark-design-system.vercel.app/registry/v0.6.0/tabs.json",
+        "https://stark-design-system.vercel.app/registry/v0.6.0/textarea.json",
+        "https://stark-design-system.vercel.app/registry/v0.6.0/toast.json"
+      ]
+    }
+  ]
+}

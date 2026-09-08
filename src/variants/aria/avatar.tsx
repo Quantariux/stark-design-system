@@ -48,6 +48,7 @@ function AvatarImage({
   className,
   onLoad,
   onError,
+  alt = "",
   ...props
 }: React.ComponentProps<"img">) {
   const avatar = React.useContext(AvatarContext)
@@ -57,7 +58,19 @@ function AvatarImage({
   if (avatar?.status === "error") return null
 
   return (
+    /*
+     * A plain <img>, not next/image. This component installs into projects that may not be
+     * Next at all, and next/image would drag a framework dependency into a registry item
+     * along with a loader those projects have no way to configure.
+     *
+     * `alt` defaults to empty, which marks the image decorative. That is right for an
+     * avatar: the person is named by the text beside it, and the fallback carries their
+     * initials, so a non-empty default would announce the same name twice. A caller with
+     * a genuinely informative image can still pass one.
+     */
+    // eslint-disable-next-line @next/next/no-img-element
     <img
+      alt={alt}
       data-slot="avatar-image"
       className={cn("aspect-square size-full rounded-full object-cover", className)}
       onLoad={(event) => {

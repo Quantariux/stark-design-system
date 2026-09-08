@@ -1,0 +1,19 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "tooltip",
+  "type": "registry:ui",
+  "dependencies": [
+    "cn",
+    "react-aria-components"
+  ],
+  "registryDependencies": [
+    "https://stark-design-system.vercel.app/registry/v0.5.0/aria/theme.json"
+  ],
+  "files": [
+    {
+      "path": "components/ui/tooltip.tsx",
+      "content": "\"use client\"\n\nimport * as React from \"react\"\nimport {\n  Tooltip as AriaTooltip,\n  TooltipTrigger as AriaTooltipTrigger,\n} from \"react-aria-components\"\nimport { cn } from \"cn\"\n\n/*\n * React Aria's parts do not line up one-to-one with the other trees, and the mismatch is\n * structural rather than cosmetic.\n *\n * RAC's `TooltipTrigger` is the ROOT: it wraps both the trigger and the tooltip. What this\n * system calls TooltipTrigger is just the focusable child inside it. So the names are\n * remapped -- our Tooltip becomes RAC's TooltipTrigger, our TooltipContent becomes RAC's\n * Tooltip -- and a consumer keeps writing the same three components in the same order.\n *\n * There is also no provider. RAC takes `delay` per trigger, so TooltipProvider becomes a\n * context carrying the delay rather than a primitive. The behaviour it exists for is\n * unchanged: one delay configured once, near the root.\n */\nconst TooltipDelayContext = React.createContext(400)\n\n/**\n * TooltipProvider shares one delay across every tooltip beneath it.\n *\n * Without it each tooltip waits its own full delay, so moving along a toolbar makes you\n * pay the delay again at every stop.\n */\nfunction TooltipProvider({\n  delay = 400,\n  children,\n}: {\n  delay?: number\n  children?: React.ReactNode\n}) {\n  return (\n    <TooltipDelayContext.Provider value={delay}>{children}</TooltipDelayContext.Provider>\n  )\n}\n\nfunction Tooltip(props: React.ComponentProps<typeof AriaTooltipTrigger>) {\n  const delay = React.useContext(TooltipDelayContext)\n  return <AriaTooltipTrigger delay={delay} {...props} />\n}\n\n/*\n * The trigger is the child itself.\n *\n * RAC attaches tooltip behaviour to the focusable element it wraps, so there is no element\n * to render here -- wrapping the child in a span would put a non-focusable node between\n * RAC and the control, and the tooltip would never open on keyboard focus.\n */\nfunction TooltipTrigger({\n  render,\n  children,\n}: {\n  render?: React.ReactElement\n  children?: React.ReactNode\n  className?: string\n}) {\n  return <>{render ?? children}</>\n}\n\nfunction TooltipContent({\n  className,\n  sideOffset = 6,\n  children,\n  ...props\n}: React.ComponentProps<typeof AriaTooltip> & { sideOffset?: number }) {\n  return (\n    <AriaTooltip\n      data-slot=\"tooltip-content\"\n      offset={sideOffset}\n      className={cn(\n        \"z-50 w-fit max-w-xs rounded-md bg-primary px-2 py-1 text-xs text-balance text-primary-foreground shadow-md transition-[transform,scale,opacity] data-[exiting]:scale-95 data-[exiting]:opacity-0 data-[entering]:scale-95 data-[entering]:opacity-0\",\n        className\n      )}\n      {...props}\n    >\n      {children}\n    </AriaTooltip>\n  )\n}\n\nexport { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider }\n",
+      "type": "registry:ui"
+    }
+  ]
+}

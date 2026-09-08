@@ -1,0 +1,19 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "popover",
+  "type": "registry:ui",
+  "dependencies": [
+    "@base-ui/react",
+    "cn"
+  ],
+  "registryDependencies": [
+    "https://stark-design-system.vercel.app/registry/v0.6.0/theme.json"
+  ],
+  "files": [
+    {
+      "path": "components/ui/popover.tsx",
+      "content": "\"use client\"\n\nimport { Popover as PopoverPrimitive } from \"@base-ui/react/popover\"\nimport { cn } from \"cn\"\n\nfunction Popover(props: PopoverPrimitive.Root.Props) {\n  return <PopoverPrimitive.Root {...props} />\n}\n\nfunction PopoverTrigger({ className, ...props }: PopoverPrimitive.Trigger.Props) {\n  return (\n    <PopoverPrimitive.Trigger\n      data-slot=\"popover-trigger\"\n      className={cn(className)}\n      {...props}\n    />\n  )\n}\n\n/**\n * The popup, already portalled and positioned.\n *\n * Portal and Positioner are folded in rather than exposed, because forgetting either is\n * the usual way a popover ends up clipped inside an `overflow: hidden` ancestor —\n * a bug that only appears once the component is used somewhere scrollable.\n */\nfunction PopoverContent({\n  className,\n  align = \"center\",\n  sideOffset = 6,\n  children,\n  ...props\n}: PopoverPrimitive.Popup.Props & {\n  align?: PopoverPrimitive.Positioner.Props[\"align\"]\n  sideOffset?: number\n}) {\n  return (\n    <PopoverPrimitive.Portal>\n      <PopoverPrimitive.Positioner align={align} sideOffset={sideOffset}>\n        <PopoverPrimitive.Popup\n          data-slot=\"popover-content\"\n          className={cn(\n            \"z-50 w-72 origin-(--transform-origin) rounded-lg bg-popover p-4 text-popover-foreground shadow-md ring-1 ring-foreground/10 outline-none transition-[transform,scale,opacity] data-ending-style:scale-95 data-ending-style:opacity-0 data-starting-style:scale-95 data-starting-style:opacity-0\",\n            className\n          )}\n          {...props}\n        >\n          {children}\n        </PopoverPrimitive.Popup>\n      </PopoverPrimitive.Positioner>\n    </PopoverPrimitive.Portal>\n  )\n}\n\nfunction PopoverTitle({ className, ...props }: PopoverPrimitive.Title.Props) {\n  return (\n    <PopoverPrimitive.Title\n      data-slot=\"popover-title\"\n      className={cn(\"text-sm leading-snug font-medium\", className)}\n      {...props}\n    />\n  )\n}\n\nfunction PopoverDescription({\n  className,\n  ...props\n}: PopoverPrimitive.Description.Props) {\n  return (\n    <PopoverPrimitive.Description\n      data-slot=\"popover-description\"\n      className={cn(\"text-sm text-muted-foreground\", className)}\n      {...props}\n    />\n  )\n}\n\nfunction PopoverClose({ className, ...props }: PopoverPrimitive.Close.Props) {\n  return (\n    <PopoverPrimitive.Close\n      data-slot=\"popover-close\"\n      className={cn(className)}\n      {...props}\n    />\n  )\n}\n\nexport {\n  Popover,\n  PopoverTrigger,\n  PopoverContent,\n  PopoverTitle,\n  PopoverDescription,\n  PopoverClose,\n}\n",
+      "type": "registry:ui"
+    }
+  ]
+}

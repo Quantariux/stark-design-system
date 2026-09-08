@@ -1,0 +1,19 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "separator",
+  "type": "registry:ui",
+  "dependencies": [
+    "cn",
+    "react-aria-components"
+  ],
+  "registryDependencies": [
+    "https://stark-design-system.vercel.app/registry/v0.6.0/aria/theme.json"
+  ],
+  "files": [
+    {
+      "path": "components/ui/separator.tsx",
+      "content": "import { Separator as AriaSeparator } from \"react-aria-components\"\r\nimport * as React from \"react\"\r\nimport { cn } from \"cn\"\r\n\r\n/**\r\n * A visual divider.\r\n *\r\n * The primitive sets `role=\"separator\"` and the orientation, so a decorative rule and a\r\n * meaningful one are distinguishable to assistive technology rather than both being an\r\n * anonymous bordered div.\r\n */\r\nfunction Separator({\r\n  className,\r\n  orientation = \"horizontal\",\r\n  ...props\r\n}: React.ComponentProps<typeof AriaSeparator>) {\r\n  return (\r\n    <AriaSeparator\r\n      data-slot=\"separator\"\r\n      orientation={orientation}\r\n      className={cn(\r\n        \"shrink-0 bg-border data-[orientation=horizontal]:h-px data-[orientation=horizontal]:w-full data-[orientation=vertical]:h-full data-[orientation=vertical]:w-px\",\r\n        className\r\n      )}\r\n      {...props}\r\n    />\r\n  )\r\n}\r\n\r\nexport { Separator }\r\n",
+      "type": "registry:ui"
+    }
+  ]
+}

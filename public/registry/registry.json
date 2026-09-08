@@ -2,7 +2,7 @@
   "$schema": "https://ui.shadcn.com/schema/registry.json",
   "name": "stark",
   "homepage": "https://stark-design-system.vercel.app",
-  "version": "0.5.0",
+  "version": "0.6.0",
   "items": [
     {
       "name": "theme",

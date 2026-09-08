@@ -10,7 +10,7 @@ project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - `https://stark-design-system.vercel.app/registry/{name}.json` always reflects the latest
   deploy. Convenient, and it means a component can change under a project without anything
   in that project having changed.
-- `https://stark-design-system.vercel.app/registry/v0.5.0/{name}.json` is written once per
+- `https://stark-design-system.vercel.app/registry/v0.6.0/{name}.json` is written once per
   release and never rewritten. Point `components.json` at that one.
 
 A git tag pins this repository; it does not pin what `shadcn add` downloads into someone
@@ -48,6 +48,39 @@ else's app. The versioned path is what does.
 
 - 19 components remain to port, twice over. Blocks need no porting: they compose
   `@/components/ui/*` by alias, so one block source serves every variant.
+
+## [0.6.0] - 2026-09-08
+
+### Added
+
+- **All three primitive trees are complete.** Base UI, Radix and React Aria each ship 32
+  items, all five blocks, and pass the same 26 story files and 80 assertions. The stories
+  are shared and aliased per project, so the trees are held to being equivalent rather than
+  separately correct: a port that changes focus order, drops an aria attribute or breaks
+  keyboard operation fails the same assertion that guards Base UI.
+
+- **Storybook can show a variant.** `npm run storybook:radix` (:6007) and
+  `npm run storybook:aria` (:6008) alongside `npm run storybook` (:6006). Module resolution
+  happens at build time, so a toolbar switch is not possible -- one process per variant is
+  the honest shape. A variant shows a story only where it has ported that component.
+
+### Notes
+
+- **React Aria diverges far more than Radix does, and almost all of it is silent.** It uses
+  `isSelected` / `defaultSelected` / `isDisabled` where the DOM uses `checked` /
+  `defaultChecked` / `disabled`; passing the DOM name is not an error, it is an unknown prop
+  that is ignored, so a switch renders off while the caller believes it is on. Tabs are
+  addressed by key rather than value, so a `value` prop would leave every tab sharing one
+  generated key. It dispatches `onPress` rather than `onClick`, so an onClick handed to a
+  RAC Button is dropped and the button looks right while doing nothing. Selection is
+  `data-selected`, and because RAC renders a label around a hidden input, focus styling
+  reads `data-focus-visible` rather than the `:focus-visible` pseudo-class.
+
+- **Four components have no counterpart in one tree or the other and were built here.**
+  Radix has no toast queue, no combobox, and a Form shaped nothing like this API; React Aria
+  has no Avatar, and its toast is `UNSTABLE_`-only -- not a dependency to hand a consumer
+  under a caret range, so that tree implements its own with the pause-on-hover-and-focus
+  behaviour that makes a toast readable.
 
 ## [0.5.0] - 2026-09-07
 
