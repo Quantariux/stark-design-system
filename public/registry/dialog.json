@@ -8,8 +8,8 @@
     "lucide-react"
   ],
   "registryDependencies": [
-    "button",
-    "theme"
+    "https://stark-design-system.vercel.app/registry/button.json",
+    "https://stark-design-system.vercel.app/registry/theme.json"
   ],
   "files": [
     {

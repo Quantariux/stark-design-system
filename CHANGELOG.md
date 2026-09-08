@@ -10,11 +10,45 @@ project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - `https://stark-design-system.vercel.app/registry/{name}.json` always reflects the latest
   deploy. Convenient, and it means a component can change under a project without anything
   in that project having changed.
-- `https://stark-design-system.vercel.app/registry/v0.4.0/{name}.json` is written once per
+- `https://stark-design-system.vercel.app/registry/v0.4.1/{name}.json` is written once per
   release and never rewritten. Point `components.json` at that one.
 
 A git tag pins this repository; it does not pin what `shadcn add` downloads into someone
 else's app. The versioned path is what does.
+
+## [0.4.1] - 2026-09-07
+
+### Fixed
+
+- **Registry cross-references pointed at shadcn's components, not ours.** Every item
+  declared its dependencies as bare names -- `button`, `theme`, `card` -- and shadcn
+  resolves a bare name to its own built-in item, by documented design: "`button` means the
+  built-in shadcn `button` item." So `@stark/dashboard` would have installed shadcn's
+  badge, button, card and table beside our block, and `theme` resolved to a shadcn style
+  theme that does not exist, which is what made every install fail outright.
+
+  Nothing in the JSON looked wrong, and `check:registry` passed throughout: it resolved
+  bare names the way this repository means them rather than the way the CLI reads them. It
+  now rejects any dependency that is not an absolute URL into this registry, and that rule
+  was verified by reintroducing the exact bug and watching it fail.
+
+  Dependencies are now absolute URLs, per tier, so the pinned dashboard pulls the pinned
+  button rather than whatever is deployed today -- pinning a tree, not just an item.
+
+  Verified end to end: `npx shadcn@latest add @stark/dashboard` into a clean project
+  installs the block and our four components, writes our tokens into `globals.css`, and
+  pulls `@base-ui/react` with no Radix anywhere.
+
+- **The earlier diagnosis was wrong.** This was reported as an upstream shadcn outage. It
+  was not: shadcn's own registry installed correctly in the same project throughout. The
+  control that settled it was `npx shadcn add button` with no `registries` entry, which
+  worked, against `@stark/button`, which did not.
+
+### Note on 0.4.0
+
+`v0.4.0` was published with the bare cross-references described above and is superseded.
+Use `v0.4.1`. Versioned paths are written once; this one is the exception that created the
+rule.
 
 ## [0.4.0] - 2026-09-07
 

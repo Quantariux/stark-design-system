@@ -31,6 +31,10 @@ function items() {
     .map((file) => JSON.parse(fs.readFileSync(path.join(registryDir, file), 'utf8')));
 }
 
+const HOMEPAGE = JSON.parse(
+  fs.readFileSync(path.join(registryDir, 'registry.json'), 'utf8')
+).homepage;
+
 const all = items();
 const names = new Set(all.map((item) => item.name));
 
@@ -47,8 +51,30 @@ for (const item of all) {
       }
     }
   }
+  /*
+   * Cross-references must be absolute, and must point back into this registry.
+   *
+   * A bare name is not a reference to the item beside it: shadcn resolves `button` to the
+   * built-in shadcn button, and `theme` to a style theme that does not exist. Both are
+   * invisible in the file -- the JSON validates, the install either pulls the wrong
+   * component or fails outright in a project nobody here is looking at. This check existed
+   * before and passed, because it resolved bare names the way this repository means them
+   * rather than the way the CLI reads them.
+   */
   for (const dep of item.registryDependencies ?? []) {
-    if (!names.has(dep)) note(`${item.name}: registry dependency "${dep}" has no item`);
+    if (!dep.startsWith('http')) {
+      note(
+        `${item.name}: registry dependency "${dep}" is a bare name -- ` +
+          `shadcn resolves that to its own "${dep}" item, not ours. Use an absolute URL.`
+      );
+      continue;
+    }
+    if (!dep.startsWith(HOMEPAGE + '/registry/')) {
+      note(`${item.name}: registry dependency "${dep}" points outside this registry`);
+      continue;
+    }
+    const referenced = path.basename(dep, '.json');
+    if (!names.has(referenced)) note(`${item.name}: registry dependency "${dep}" has no item`);
   }
   if (!item.$schema) note(`${item.name}: missing $schema`);
 }
@@ -113,7 +139,13 @@ for (const file of fs.readdirSync(uiDir)) {
     note(`${name}: component has no registry item`);
     continue;
   }
-  const declared = new Set([...(item.dependencies ?? []), ...(item.registryDependencies ?? [])]);
+  // Registry dependencies are absolute URLs; compare on the item name they end in.
+  const declared = new Set([
+    ...(item.dependencies ?? []),
+    ...(item.registryDependencies ?? []).map((dep) =>
+      dep.startsWith('http') ? path.basename(dep, '.json') : dep
+    ),
+  ]);
   const source = fs.readFileSync(path.join(uiDir, file), 'utf8');
   for (const match of source.matchAll(/from\s+["']([^"']+)["']/g)) {
     const specifier = match[1];

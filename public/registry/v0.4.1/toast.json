@@ -1,0 +1,20 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "toast",
+  "type": "registry:ui",
+  "dependencies": [
+    "@base-ui/react",
+    "cn",
+    "lucide-react"
+  ],
+  "registryDependencies": [
+    "https://stark-design-system.vercel.app/registry/v0.4.1/theme.json"
+  ],
+  "files": [
+    {
+      "path": "components/ui/toast.tsx",
+      "content": "\"use client\"\n\nimport { Toast as ToastPrimitive } from \"@base-ui/react/toast\"\nimport { XIcon } from \"lucide-react\"\nimport { cn } from \"cn\"\n\n/*\n * Transient messages, on Base UI's Toast.\n *\n * The primitive is doing the work that makes a toast accessible rather than merely\n * visible: the viewport is a live region, so a message is announced without stealing\n * focus; toasts are reachable by keyboard; and the timer pauses on hover and focus, so a\n * message cannot expire while it is being read. Hand-rolled toasts almost always miss the\n * last two, and the failure is invisible to anyone testing with a mouse.\n *\n * Mount <Toaster /> once, near the root, then call useToast().add({...}) from anywhere.\n */\n\nfunction ToastProvider(props: ToastPrimitive.Provider.Props) {\n  return <ToastPrimitive.Provider {...props} />\n}\n\n/** The queue. `add`, `close` and `update` all come from here. */\nconst useToast = ToastPrimitive.useToastManager\n\nfunction ToastList() {\n  const { toasts } = ToastPrimitive.useToastManager()\n\n  return toasts.map((toast) => (\n    <ToastPrimitive.Root\n      key={toast.id}\n      toast={toast}\n      data-slot=\"toast\"\n      className={cn(\n        \"absolute right-0 bottom-0 left-auto z-50 w-[--toast-width] rounded-lg bg-popover p-4 text-popover-foreground shadow-lg ring-1 ring-foreground/10 transition-all [--toast-width:22rem] after:absolute after:bottom-full after:left-0 after:h-[calc(var(--gap)+1px)] after:w-full after:content-[''] data-ending-style:opacity-0 data-starting-style:opacity-0\",\n        \"data-[type=error]:bg-destructive data-[type=error]:text-destructive-foreground\"\n      )}\n      style={{\n        // The stack: each toast sits above the one before it, scaled slightly back, so the\n        // depth is readable at a glance rather than needing to be counted.\n        [\"--gap\" as string]: \"0.75rem\",\n        transform:\n          \"translateY(calc(var(--toast-offset-y) * -1)) scale(calc(1 - var(--toast-index) * 0.05))\",\n      }}\n    >\n      <div className=\"flex items-start gap-3\">\n        <div className=\"flex min-w-0 flex-col gap-1\">\n          <ToastPrimitive.Title\n            data-slot=\"toast-title\"\n            className=\"text-sm leading-snug font-medium\"\n          />\n          <ToastPrimitive.Description\n            data-slot=\"toast-description\"\n            className=\"text-sm text-muted-foreground data-[type=error]:text-destructive-foreground/80\"\n          />\n        </div>\n        <ToastPrimitive.Close\n          data-slot=\"toast-close\"\n          aria-label=\"Close\"\n          className=\"ml-auto inline-flex size-6 shrink-0 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-muted hover:text-foreground focus-visible:ring-3 focus-visible:ring-ring/50 focus-visible:outline-none\"\n        >\n          <XIcon className=\"size-3.5\" />\n        </ToastPrimitive.Close>\n      </div>\n    </ToastPrimitive.Root>\n  ))\n}\n\n/**\n * Mount once, near the root of the app.\n *\n * Bottom-right by default: it is out of the reading path, and away from the primary\n * action in most layouts, so a toast never covers the button that produced it.\n */\nfunction Toaster({ className, ...props }: ToastPrimitive.Portal.Props) {\n  return (\n    <ToastPrimitive.Portal {...props}>\n      <ToastPrimitive.Viewport\n        data-slot=\"toast-viewport\"\n        className={cn(\n          \"fixed right-4 bottom-4 z-50 mx-auto flex w-[22rem] max-w-[calc(100vw-2rem)]\",\n          className\n        )}\n      >\n        <ToastList />\n      </ToastPrimitive.Viewport>\n    </ToastPrimitive.Portal>\n  )\n}\n\nexport { ToastProvider, Toaster, useToast }\n",
+      "type": "registry:ui"
+    }
+  ]
+}

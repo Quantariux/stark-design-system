@@ -35,7 +35,7 @@ structure only** — they ship Radix. Port their layout onto these components.
 
    ```
    "registries": {
-     "@stark": "https://stark-design-system.vercel.app/registry/v0.4.0/{name}.json"
+     "@stark": "https://stark-design-system.vercel.app/registry/v0.4.1/{name}.json"
    }
    ```
 

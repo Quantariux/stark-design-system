@@ -7,10 +7,10 @@
     "lucide-react"
   ],
   "registryDependencies": [
-    "badge",
-    "button",
-    "card",
-    "table"
+    "https://stark-design-system.vercel.app/registry/badge.json",
+    "https://stark-design-system.vercel.app/registry/button.json",
+    "https://stark-design-system.vercel.app/registry/card.json",
+    "https://stark-design-system.vercel.app/registry/table.json"
   ],
   "files": [
     {

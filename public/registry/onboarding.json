@@ -6,12 +6,12 @@
     "lucide-react"
   ],
   "registryDependencies": [
-    "button",
-    "card",
-    "form",
-    "input",
-    "progress",
-    "textarea"
+    "https://stark-design-system.vercel.app/registry/button.json",
+    "https://stark-design-system.vercel.app/registry/card.json",
+    "https://stark-design-system.vercel.app/registry/form.json",
+    "https://stark-design-system.vercel.app/registry/input.json",
+    "https://stark-design-system.vercel.app/registry/progress.json",
+    "https://stark-design-system.vercel.app/registry/textarea.json"
   ],
   "files": [
     {

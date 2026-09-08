@@ -4,10 +4,10 @@
   "type": "registry:block",
   "dependencies": [],
   "registryDependencies": [
-    "badge",
-    "command",
-    "pagination",
-    "separator"
+    "https://stark-design-system.vercel.app/registry/badge.json",
+    "https://stark-design-system.vercel.app/registry/command.json",
+    "https://stark-design-system.vercel.app/registry/pagination.json",
+    "https://stark-design-system.vercel.app/registry/separator.json"
   ],
   "files": [
     {

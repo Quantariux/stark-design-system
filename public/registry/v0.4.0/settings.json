@@ -4,16 +4,16 @@
   "type": "registry:block",
   "dependencies": [],
   "registryDependencies": [
-    "button",
-    "card",
-    "form",
-    "input",
-    "label",
-    "separator",
-    "switch",
-    "tabs",
-    "textarea",
-    "toast"
+    "https://stark-design-system.vercel.app/registry/v0.4.0/button.json",
+    "https://stark-design-system.vercel.app/registry/v0.4.0/card.json",
+    "https://stark-design-system.vercel.app/registry/v0.4.0/form.json",
+    "https://stark-design-system.vercel.app/registry/v0.4.0/input.json",
+    "https://stark-design-system.vercel.app/registry/v0.4.0/label.json",
+    "https://stark-design-system.vercel.app/registry/v0.4.0/separator.json",
+    "https://stark-design-system.vercel.app/registry/v0.4.0/switch.json",
+    "https://stark-design-system.vercel.app/registry/v0.4.0/tabs.json",
+    "https://stark-design-system.vercel.app/registry/v0.4.0/textarea.json",
+    "https://stark-design-system.vercel.app/registry/v0.4.0/toast.json"
   ],
   "files": [
     {

@@ -6,13 +6,13 @@
     "lucide-react"
   ],
   "registryDependencies": [
-    "avatar",
-    "badge",
-    "breadcrumb",
-    "button",
-    "card",
-    "separator",
-    "tabs"
+    "https://stark-design-system.vercel.app/registry/v0.4.0/avatar.json",
+    "https://stark-design-system.vercel.app/registry/v0.4.0/badge.json",
+    "https://stark-design-system.vercel.app/registry/v0.4.0/breadcrumb.json",
+    "https://stark-design-system.vercel.app/registry/v0.4.0/button.json",
+    "https://stark-design-system.vercel.app/registry/v0.4.0/card.json",
+    "https://stark-design-system.vercel.app/registry/v0.4.0/separator.json",
+    "https://stark-design-system.vercel.app/registry/v0.4.0/tabs.json"
   ],
   "files": [
     {

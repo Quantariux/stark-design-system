@@ -8,7 +8,7 @@
     "lucide-react"
   ],
   "registryDependencies": [
-    "theme"
+    "https://stark-design-system.vercel.app/registry/v0.4.0/theme.json"
   ],
   "files": [
     {

@@ -228,9 +228,46 @@ function build() {
   const versionedDir = path.join(registryDir, `v${VERSION}`);
   fs.mkdirSync(versionedDir, { recursive: true });
 
-  const emit = (file, contents) => {
-    writeFileRetrying(path.join(registryDir, file), contents);
-    writeFileRetrying(path.join(versionedDir, file), contents);
+  /*
+   * Registry dependencies are emitted as absolute URLs, per tier.
+   *
+   * A BARE name does not mean "the item next to this one". shadcn resolves `button` to the
+   * built-in shadcn button, so a bare cross-reference silently installs someone else's
+   * component instead of ours -- and `theme` resolves to a style theme that does not exist,
+   * which fails the install outright. Neither is visible in the JSON: the file looks
+   * correct and does the wrong thing.
+   *
+   * Each tier points at itself, so the pinned dashboard pulls the pinned button rather than
+   * whatever is deployed today. That is the difference between pinning an item and pinning
+   * a tree.
+   */
+  const tiers = [
+    { dir: registryDir, base: `${HOMEPAGE}/registry` },
+    { dir: versionedDir, base: `${HOMEPAGE}/registry/v${VERSION}` },
+  ];
+
+  const absolutise = (deps, base) => (deps ?? []).map((dep) => `${base}/${dep}.json`);
+
+  const emit = (file, item) => {
+    for (const { dir, base } of tiers) {
+      const resolved = {
+        ...item,
+        ...(item.registryDependencies
+          ? { registryDependencies: absolutise(item.registryDependencies, base) }
+          : {}),
+        ...(item.items
+          ? {
+              items: item.items.map((entry) => ({
+                ...entry,
+                ...(entry.registryDependencies
+                  ? { registryDependencies: absolutise(entry.registryDependencies, base) }
+                  : {}),
+              })),
+            }
+          : {}),
+      };
+      writeFileRetrying(path.join(dir, file), JSON.stringify(resolved, null, 2));
+    }
   };
 
   const components = fs
@@ -243,12 +280,12 @@ function build() {
   const problems = [];
   const index = [];
 
-  emit('theme.json', JSON.stringify(themeItem(), null, 2));
+  emit('theme.json', themeItem());
   index.push({ name: 'theme', type: 'registry:theme' });
 
   for (const component of components) {
     const item = registryItem(component);
-    emit(`${component.name}.json`, JSON.stringify(item, null, 2));
+    emit(`${component.name}.json`, item);
     index.push({
       name: component.name,
       type: 'registry:ui',
@@ -278,7 +315,7 @@ function build() {
       // A block depends on components, not on the theme directly -- they carry it.
       block.registryDependencies.delete('theme');
       const item = registryItem(block, 'registry:block');
-      emit(`${block.name}.json`, JSON.stringify(item, null, 2));
+      emit(`${block.name}.json`, item);
       index.push({
         name: block.name,
         type: 'registry:block',
@@ -303,20 +340,13 @@ function build() {
     }
   }
 
-  emit(
-    'registry.json',
-    JSON.stringify(
-      {
-        $schema: 'https://ui.shadcn.com/schema/registry.json',
-        name: 'stark',
-        homepage: HOMEPAGE,
-        version: VERSION,
-        items: index,
-      },
-      null,
-      2
-    )
-  );
+  emit('registry.json', {
+    $schema: 'https://ui.shadcn.com/schema/registry.json',
+    name: 'stark',
+    homepage: HOMEPAGE,
+    version: VERSION,
+    items: index,
+  });
 
   console.log(
     `\nRegistry: ${index.length} items at /registry/ and pinned at /registry/v${VERSION}/`

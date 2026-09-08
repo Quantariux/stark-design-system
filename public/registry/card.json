@@ -6,7 +6,7 @@
     "cn"
   ],
   "registryDependencies": [
-    "theme"
+    "https://stark-design-system.vercel.app/registry/theme.json"
   ],
   "files": [
     {
