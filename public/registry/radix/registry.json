@@ -102,6 +102,18 @@
       ]
     },
     {
+      "name": "dropdown-menu",
+      "type": "registry:ui",
+      "dependencies": [
+        "@radix-ui/react-dropdown-menu",
+        "cn",
+        "lucide-react"
+      ],
+      "registryDependencies": [
+        "https://stark-design-system.vercel.app/registry/radix/theme.json"
+      ]
+    },
+    {
       "name": "input",
       "type": "registry:ui",
       "dependencies": [
@@ -138,6 +150,17 @@
       "type": "registry:ui",
       "dependencies": [
         "@radix-ui/react-popover",
+        "cn"
+      ],
+      "registryDependencies": [
+        "https://stark-design-system.vercel.app/registry/radix/theme.json"
+      ]
+    },
+    {
+      "name": "progress",
+      "type": "registry:ui",
+      "dependencies": [
+        "@radix-ui/react-progress",
         "cn"
       ],
       "registryDependencies": [
