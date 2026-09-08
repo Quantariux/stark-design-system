@@ -53,6 +53,24 @@ const tokensPath = path.join(root, 'tokens.json');
 
 const SCHEMA = 'https://ui.shadcn.com/schema/registry-item.json';
 
+/*
+ * One tree per primitive.
+ *
+ * A consuming project picks its primitive by choosing a URL, which is the only way this
+ * can work: the project already has a primitive installed, and handing it a second one is
+ * how a codebase ends up with two focus-management models. `base` also serves the bare
+ * /registry/ path, so anything already pointing there keeps working.
+ *
+ * A component that touches a primitive only appears under a variant once it has been
+ * ported. Serving the Base UI file from a /radix/ path would be a lie the consumer
+ * discovers at runtime, so the variant registry is deliberately partial until then.
+ */
+const VARIANTS = [
+  { id: 'base', label: 'Base UI', dir: null },
+  { id: 'radix', label: 'Radix', dir: path.join(root, 'src/variants/radix') },
+  { id: 'aria', label: 'React Aria', dir: path.join(root, 'src/variants/aria') },
+];
+
 /**
  * Specifiers a consumer already has, so declaring them would make `shadcn add` install
  * packages the target project provides itself.
@@ -209,12 +227,20 @@ function themeItem() {
   };
 }
 
-function build() {
+function buildVariant(variant) {
   if (!fs.existsSync(uiDir)) {
     console.warn('No components found in src/components/ui yet.');
     return;
   }
-  fs.mkdirSync(registryDir, { recursive: true });
+  const suffix = variant.id === 'base' ? '' : `/${variant.id}`;
+  const floatingDir = path.join(registryDir, ...(variant.id === 'base' ? [] : [variant.id]));
+  const pinnedDir = path.join(
+    registryDir,
+    `v${VERSION}`,
+    ...(variant.id === 'base' ? [] : [variant.id])
+  );
+  fs.mkdirSync(floatingDir, { recursive: true });
+  fs.mkdirSync(pinnedDir, { recursive: true });
 
   /*
    * Every item is written twice: to /registry/<name>.json, which always reflects the latest
@@ -225,8 +251,6 @@ function build() {
    * because that comes from a URL serving whatever was deployed last. The versioned path is
    * the only thing here a project can depend on and expect to stay put.
    */
-  const versionedDir = path.join(registryDir, `v${VERSION}`);
-  fs.mkdirSync(versionedDir, { recursive: true });
 
   /*
    * Registry dependencies are emitted as absolute URLs, per tier.
@@ -242,13 +266,16 @@ function build() {
    * a tree.
    */
   const tiers = [
-    { dir: registryDir, base: `${HOMEPAGE}/registry` },
-    { dir: versionedDir, base: `${HOMEPAGE}/registry/v${VERSION}` },
+    { dir: floatingDir, base: `${HOMEPAGE}/registry${suffix}` },
+    { dir: pinnedDir, base: `${HOMEPAGE}/registry/v${VERSION}${suffix}` },
   ];
 
   const absolutise = (deps, base) => (deps ?? []).map((dep) => `${base}/${dep}.json`);
 
+  const written = new Set();
+
   const emit = (file, item) => {
+    written.add(file);
     for (const { dir, base } of tiers) {
       const resolved = {
         ...item,
@@ -270,12 +297,44 @@ function build() {
     }
   };
 
+  const ported = (file) => variant.dir && fs.existsSync(path.join(variant.dir, file));
+  const primitiveFree = (file) =>
+    !fs.readFileSync(path.join(uiDir, file), 'utf8').includes('@base-ui/react');
+
   const components = fs
     .readdirSync(uiDir)
     .filter((file) => file.endsWith('.tsx'))
+    // A variant ships a component when it has been ported, or when the canonical file
+    // touches no primitive at all and is therefore already correct for every variant.
+    .filter((file) => variant.id === 'base' || ported(file) || primitiveFree(file))
     // Wrapped, not passed bare: map supplies (value, index, array), and the index would
     // arrive as the directory argument.
-    .map((file) => describe(file));
+    .map((file) => describe(file, ported(file) ? variant.dir : uiDir));
+
+  /*
+   * A component ships only when everything it references also ships in this variant.
+   *
+   * Touching no primitive is not sufficient. `pagination` is identical under every
+   * primitive -- and it composes `button`, so a Radix tree without a ported button cannot
+   * offer it either. Dependencies chain, so this runs to a fixed point: dropping `button`
+   * drops `pagination`, and whatever composed `pagination` goes with it.
+   */
+  let shippable = components;
+  for (;;) {
+    const present = new Set(shippable.map((entry) => entry.name));
+    present.add('theme');
+    const next = shippable.filter((entry) =>
+      [...entry.registryDependencies].every((dep) => present.has(dep))
+    );
+    if (next.length === shippable.length) break;
+    for (const dropped of shippable.filter((entry) => !next.includes(entry))) {
+      const missing = [...dropped.registryDependencies].filter((dep) => !present.has(dep));
+      console.log(
+        `  ${dropped.name}  skipped for ${variant.label}: composes ${missing.join(', ')}`
+      );
+    }
+    shippable = next;
+  }
 
   const problems = [];
   const index = [];
@@ -283,7 +342,7 @@ function build() {
   emit('theme.json', themeItem());
   index.push({ name: 'theme', type: 'registry:theme' });
 
-  for (const component of components) {
+  for (const component of shippable) {
     const item = registryItem(component);
     emit(`${component.name}.json`, item);
     index.push({
@@ -309,11 +368,30 @@ function build() {
    * form reports failure -- which is the part that otherwise gets re-decided, differently,
    * on every screen.
    */
+  const available = new Set(index.map((entry) => entry.name));
+
   if (fs.existsSync(blocksDir)) {
     for (const file of fs.readdirSync(blocksDir).filter((f) => f.endsWith('.tsx'))) {
       const block = describe(file, blocksDir);
       // A block depends on components, not on the theme directly -- they carry it.
       block.registryDependencies.delete('theme');
+
+      /*
+       * A block ships only where its whole tree exists.
+       *
+       * Block sources are shared across variants -- they compose `@/components/ui/*` by
+       * alias, so the same file works whichever tree got installed. But a variant that has
+       * not ported `switch` yet cannot offer `settings`: the install would resolve four of
+       * five components and leave the project with a screen that does not compile.
+       */
+      const missing = [...block.registryDependencies].filter((dep) => !available.has(dep));
+      if (missing.length) {
+        console.log(
+          `  ${block.name}  [block]  skipped for ${variant.label}: needs ${missing.join(', ')}`
+        );
+        continue;
+      }
+
       const item = registryItem(block, 'registry:block');
       emit(`${block.name}.json`, item);
       index.push({
@@ -348,8 +426,26 @@ function build() {
     items: index,
   });
 
+  /*
+   * Remove items this build did not write.
+   *
+   * A component that stops qualifying for a variant -- because a dependency was withdrawn,
+   * or it was renamed -- leaves its old file behind, and the file stays fetchable at a URL
+   * that is not listed in any index. Nothing here fails: a consumer who installed it once
+   * and pinned the URL keeps resolving a component whose dependencies no longer exist.
+   * Only .json is removed, so the nested variant and version directories survive.
+   */
+  for (const { dir } of tiers) {
+    for (const file of fs.readdirSync(dir)) {
+      if (!file.endsWith('.json') || written.has(file)) continue;
+      fs.unlinkSync(path.join(dir, file));
+      console.log(`  ${path.basename(file, '.json')}  removed from ${variant.label}: no longer shipped`);
+    }
+  }
+
   console.log(
-    `\nRegistry: ${index.length} items at /registry/ and pinned at /registry/v${VERSION}/`
+    `  ${variant.label.padEnd(11)} ${String(index.length).padStart(2)} items -> ` +
+      `/registry${suffix}/ and /registry/v${VERSION}${suffix}/`
   );
 
   if (problems.length) {
@@ -359,6 +455,10 @@ function build() {
     for (const problem of problems) console.error('  - ' + problem);
     process.exit(1);
   }
+}
+
+function build() {
+  for (const variant of VARIANTS) buildVariant(variant);
 }
 
 build();

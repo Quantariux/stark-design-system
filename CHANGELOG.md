@@ -16,6 +16,39 @@ project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 A git tag pins this repository; it does not pin what `shadcn add` downloads into someone
 else's app. The versioned path is what does.
 
+## [Unreleased]
+
+### Added
+
+- **One registry tree per primitive.** The system now emits `/registry/` (Base UI),
+  `/registry/radix/` and `/registry/aria/`, each with a pinned twin. A consuming project
+  selects its primitive by choosing a URL, which is the only way this can work: the project
+  already has a primitive installed, and handing it a second one is how a codebase ends up
+  with two focus-management models and two portal implementations. `base` also serves the
+  bare `/registry/` path, so existing consumers are unaffected.
+
+- **`check:usage` enforces one primitive per variant, not one per repository.** The rule
+  that mattered was never "Base UI everywhere" -- it was that a single *installed* tree must
+  not mix primitives. That holds per variant, so the three trees may differ while none of
+  them mixes. Verified by testing all three cases: a Radix import fails inside the Base UI
+  tree, passes inside the Radix tree, and fails in a block.
+
+### Notes
+
+- **The Radix and React Aria trees are deliberately partial** -- 7 items each, against 32
+  for Base UI. They carry the components that touch no primitive and are therefore already
+  correct everywhere. Anything that wraps a primitive appears only once ported; serving the
+  Base UI file from a `/radix/` path would be a lie the consumer discovers at runtime.
+
+- **Completeness is enforced in both directions, to a fixed point.** A variant missing
+  `switch` does not offer the `settings` block, and `pagination` -- which touches no
+  primitive at all -- is withheld too, because it composes `button`. Dependencies chain, so
+  dropping one component drops whatever composed it. Each skip reports exactly what it
+  needs.
+
+- 19 components remain to port, twice over. Blocks need no porting: they compose
+  `@/components/ui/*` by alias, so one block source serves every variant.
+
 ## [0.4.1] - 2026-09-07
 
 ### Fixed
