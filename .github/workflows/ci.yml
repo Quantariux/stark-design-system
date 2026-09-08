@@ -46,8 +46,13 @@ jobs:
 
       # Storybook stories run in a real browser with the a11y addon at 'error', so a
       # violation fails the build rather than being noted in a panel nobody opens.
-      - name: Test (Storybook + accessibility)
-        run: npx vitest run --project=storybook
+      #
+      # No --project filter. vitest.config.ts defines one project per variant -- storybook,
+      # storybook-radix, storybook-aria -- and a port is only proven by running its own tree.
+      # Filtering to a single project ran 80 of the 240 tests and left both ported variants
+      # entirely unverified, which is exactly where a regression would hide.
+      - name: Test (Storybook + accessibility, all variants)
+        run: npx vitest run
 
       - name: Build
         run: npx next build
