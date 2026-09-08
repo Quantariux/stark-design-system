@@ -20,6 +20,41 @@
       ]
     },
     {
+      "name": "avatar",
+      "type": "registry:ui",
+      "dependencies": [
+        "@radix-ui/react-avatar",
+        "cn"
+      ],
+      "registryDependencies": [
+        "https://stark-design-system.vercel.app/registry/v0.4.1/radix/theme.json"
+      ]
+    },
+    {
+      "name": "badge",
+      "type": "registry:ui",
+      "dependencies": [
+        "@radix-ui/react-slot",
+        "class-variance-authority",
+        "cn"
+      ],
+      "registryDependencies": [
+        "https://stark-design-system.vercel.app/registry/v0.4.1/radix/theme.json"
+      ]
+    },
+    {
+      "name": "button",
+      "type": "registry:ui",
+      "dependencies": [
+        "@radix-ui/react-slot",
+        "class-variance-authority",
+        "cn"
+      ],
+      "registryDependencies": [
+        "https://stark-design-system.vercel.app/registry/v0.4.1/radix/theme.json"
+      ]
+    },
+    {
       "name": "card",
       "type": "registry:ui",
       "dependencies": [
@@ -30,9 +65,44 @@
       ]
     },
     {
+      "name": "checkbox",
+      "type": "registry:ui",
+      "dependencies": [
+        "@radix-ui/react-checkbox",
+        "cn",
+        "lucide-react"
+      ],
+      "registryDependencies": [
+        "https://stark-design-system.vercel.app/registry/v0.4.1/radix/theme.json"
+      ]
+    },
+    {
       "name": "label",
       "type": "registry:ui",
       "dependencies": [
+        "cn"
+      ],
+      "registryDependencies": [
+        "https://stark-design-system.vercel.app/registry/v0.4.1/radix/theme.json"
+      ]
+    },
+    {
+      "name": "pagination",
+      "type": "registry:ui",
+      "dependencies": [
+        "cn",
+        "lucide-react"
+      ],
+      "registryDependencies": [
+        "https://stark-design-system.vercel.app/registry/v0.4.1/radix/button.json",
+        "https://stark-design-system.vercel.app/registry/v0.4.1/radix/theme.json"
+      ]
+    },
+    {
+      "name": "separator",
+      "type": "registry:ui",
+      "dependencies": [
+        "@radix-ui/react-separator",
         "cn"
       ],
       "registryDependencies": [
@@ -50,9 +120,32 @@
       ]
     },
     {
+      "name": "switch",
+      "type": "registry:ui",
+      "dependencies": [
+        "@radix-ui/react-switch",
+        "cn"
+      ],
+      "registryDependencies": [
+        "https://stark-design-system.vercel.app/registry/v0.4.1/radix/theme.json"
+      ]
+    },
+    {
       "name": "table",
       "type": "registry:ui",
       "dependencies": [
+        "cn"
+      ],
+      "registryDependencies": [
+        "https://stark-design-system.vercel.app/registry/v0.4.1/radix/theme.json"
+      ]
+    },
+    {
+      "name": "tabs",
+      "type": "registry:ui",
+      "dependencies": [
+        "@radix-ui/react-tabs",
+        "class-variance-authority",
         "cn"
       ],
       "registryDependencies": [
@@ -67,6 +160,20 @@
       ],
       "registryDependencies": [
         "https://stark-design-system.vercel.app/registry/v0.4.1/radix/theme.json"
+      ]
+    },
+    {
+      "name": "dashboard",
+      "type": "registry:block",
+      "dependencies": [
+        "cn",
+        "lucide-react"
+      ],
+      "registryDependencies": [
+        "https://stark-design-system.vercel.app/registry/v0.4.1/radix/badge.json",
+        "https://stark-design-system.vercel.app/registry/v0.4.1/radix/button.json",
+        "https://stark-design-system.vercel.app/registry/v0.4.1/radix/card.json",
+        "https://stark-design-system.vercel.app/registry/v0.4.1/radix/table.json"
       ]
     }
   ]
