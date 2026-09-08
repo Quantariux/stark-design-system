@@ -1,0 +1,19 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "switch",
+  "type": "registry:ui",
+  "dependencies": [
+    "cn",
+    "react-aria-components"
+  ],
+  "registryDependencies": [
+    "https://stark-design-system.vercel.app/registry/aria/theme.json"
+  ],
+  "files": [
+    {
+      "path": "components/ui/switch.tsx",
+      "content": "\"use client\"\n\nimport * as React from \"react\"\nimport { Switch as AriaSwitch } from \"react-aria-components\"\nimport { cn } from \"cn\"\n\n/*\n * React Aria diverges from the other two trees in two ways, and both are absorbed here so\n * the same story and the same block compile against all three.\n *\n * Prop names. RAC uses isSelected / defaultSelected / isDisabled where the DOM -- and Base\n * UI and Radix with it -- use checked / defaultChecked / disabled. Passing `defaultChecked`\n * to RAC is not an error: it is an unknown prop, silently ignored, and the switch renders\n * off while the caller believes it is on. That is exactly what happened on the first\n * attempt here.\n *\n * State attribute. RAC marks selection with data-selected, where Base UI uses data-checked\n * and Radix data-state=\"checked\". A selector reading the wrong one never matches, so the\n * control works and simply never looks on.\n *\n * The structure differs too but needs no translation: RAC renders a <label> wrapping a\n * visually hidden input with role=\"switch\", and it forwards `id` to that input -- so an\n * external <Label htmlFor> still points at the focusable control, which is what the stories\n * rely on. RAC has no separate Thumb, so the thumb is a span carrying the same data-slot\n * the other trees use.\n */\nfunction Switch({\n  className,\n  size = \"default\",\n  checked,\n  defaultChecked,\n  disabled,\n  onCheckedChange,\n  children,\n  ...props\n}: Omit<\n  React.ComponentProps<typeof AriaSwitch>,\n  \"children\" | \"isSelected\" | \"defaultSelected\" | \"isDisabled\" | \"onChange\"\n> & {\n  children?: React.ReactNode\n  size?: \"sm\" | \"default\"\n  checked?: boolean\n  defaultChecked?: boolean\n  disabled?: boolean\n  onCheckedChange?: (checked: boolean) => void\n}) {\n  return (\n    <AriaSwitch\n      data-slot=\"switch\"\n      data-size={size}\n      isSelected={checked}\n      defaultSelected={defaultChecked}\n      isDisabled={disabled}\n      onChange={onCheckedChange}\n      className={cn(\n        \"peer group/switch relative inline-flex shrink-0 items-center rounded-full border border-transparent transition-all outline-none after:absolute after:-inset-x-3 after:-inset-y-2 data-[focus-visible]:border-ring data-[focus-visible]:ring-3 data-[focus-visible]:ring-ring/50 data-[size=default]:h-[18.4px] data-[size=default]:w-[32px] data-[size=sm]:h-[14px] data-[size=sm]:w-[24px] data-selected:bg-primary not-data-selected:bg-input dark:not-data-selected:bg-input/80 data-disabled:cursor-not-allowed data-disabled:opacity-50\",\n        className\n      )}\n      {...props}\n    >\n      <span\n        data-slot=\"switch-thumb\"\n        className=\"pointer-events-none block rounded-full bg-background ring-0 transition-transform group-data-[size=default]/switch:size-4 group-data-[size=sm]/switch:size-3 group-data-selected/switch:translate-x-[calc(100%-2px)] group-not-data-selected/switch:translate-x-0 dark:group-data-selected/switch:bg-primary-foreground dark:group-not-data-selected/switch:bg-foreground\"\n      />\n      {children}\n    </AriaSwitch>\n  )\n}\n\nexport { Switch }\n",
+      "type": "registry:ui"
+    }
+  ]
+}

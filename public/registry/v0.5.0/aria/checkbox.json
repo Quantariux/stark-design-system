@@ -1,0 +1,20 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "checkbox",
+  "type": "registry:ui",
+  "dependencies": [
+    "cn",
+    "lucide-react",
+    "react-aria-components"
+  ],
+  "registryDependencies": [
+    "https://stark-design-system.vercel.app/registry/v0.5.0/aria/theme.json"
+  ],
+  "files": [
+    {
+      "path": "components/ui/checkbox.tsx",
+      "content": "\"use client\"\r\n\r\nimport * as React from \"react\"\r\nimport { Checkbox as AriaCheckbox } from \"react-aria-components\"\r\nimport { cn } from \"cn\"\r\nimport { CheckIcon } from \"lucide-react\"\r\n\r\n/*\r\n * RAC renders a <label> wrapping a visually hidden input, so the styled element is the\r\n * label and focus lands on the input -- which is why focus is read from data-focus-visible\r\n * rather than the :focus-visible pseudo-class, and selection from data-selected rather than\r\n * Base UI's data-checked.\r\n *\r\n * The tick is rendered through RAC's render-prop children, so it exists only while\r\n * selected. Hiding it with CSS instead would leave it in the accessibility tree, where a\r\n * screen reader can find a checkmark inside an unchecked box.\r\n */\r\nfunction Checkbox({\r\n  className,\r\n  checked,\r\n  defaultChecked,\r\n  disabled,\r\n  onCheckedChange,\r\n  ...props\r\n}: Omit<\r\n  React.ComponentProps<typeof AriaCheckbox>,\r\n  \"children\" | \"isSelected\" | \"defaultSelected\" | \"isDisabled\" | \"onChange\"\r\n> & {\r\n  checked?: boolean\r\n  defaultChecked?: boolean\r\n  disabled?: boolean\r\n  onCheckedChange?: (checked: boolean) => void\r\n}) {\r\n  return (\r\n    <AriaCheckbox\r\n      data-slot=\"checkbox\"\r\n      isSelected={checked}\r\n      defaultSelected={defaultChecked}\r\n      isDisabled={disabled}\r\n      onChange={onCheckedChange}\r\n      className={cn(\r\n        \"peer relative flex size-4 shrink-0 items-center justify-center rounded-[4px] border border-input transition-colors outline-none group-has-disabled/field:opacity-50 group-has-[:focus-visible]/field-label:ring-0 group-has-[:focus-visible]/field-label:not-data-selected:border-input after:absolute after:-inset-x-3 after:-inset-y-2 data-[focus-visible]:border-ring data-[focus-visible]:ring-3 data-[focus-visible]:ring-ring/50 disabled:cursor-not-allowed disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-3 aria-invalid:ring-destructive/20 aria-invalid:aria-checked:border-primary dark:bg-input/30 dark:aria-invalid:border-destructive/50 dark:aria-invalid:ring-destructive/40 data-selected:border-primary data-selected:bg-primary data-selected:text-primary-foreground group-has-[:focus-visible]/field-label:data-selected:border-primary dark:data-selected:bg-primary\",\r\n        className\r\n      )}\r\n      {...props}\r\n    >\r\n      {({ isSelected }) =>\r\n        isSelected ? (\r\n          <span\r\n            data-slot=\"checkbox-indicator\"\r\n            className=\"grid place-content-center text-current transition-none [&>svg]:size-3.5\"\r\n          >\r\n            <CheckIcon />\r\n          </span>\r\n        ) : null\r\n      }\r\n    </AriaCheckbox>\r\n  )\r\n}\r\n\r\nexport { Checkbox }\r\n",
+      "type": "registry:ui"
+    }
+  ]
+}

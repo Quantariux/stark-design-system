@@ -1,0 +1,19 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "breadcrumb",
+  "type": "registry:ui",
+  "dependencies": [
+    "cn",
+    "lucide-react"
+  ],
+  "registryDependencies": [
+    "https://stark-design-system.vercel.app/registry/v0.5.0/aria/theme.json"
+  ],
+  "files": [
+    {
+      "path": "components/ui/breadcrumb.tsx",
+      "content": "import * as React from \"react\"\r\nimport { cn } from \"cn\"\r\nimport { ChevronRightIcon, MoreHorizontalIcon } from \"lucide-react\"\r\n\r\nfunction Breadcrumb({ className, ...props }: React.ComponentProps<\"nav\">) {\r\n  return (\r\n    <nav\r\n      aria-label=\"breadcrumb\"\r\n      data-slot=\"breadcrumb\"\r\n      className={cn(className)}\r\n      {...props}\r\n    />\r\n  )\r\n}\r\n\r\nfunction BreadcrumbList({ className, ...props }: React.ComponentProps<\"ol\">) {\r\n  return (\r\n    <ol\r\n      data-slot=\"breadcrumb-list\"\r\n      className={cn(\r\n        \"flex flex-wrap items-center gap-1.5 text-sm wrap-break-word text-muted-foreground\",\r\n        className\r\n      )}\r\n      {...props}\r\n    />\r\n  )\r\n}\r\n\r\nfunction BreadcrumbItem({ className, ...props }: React.ComponentProps<\"li\">) {\r\n  return (\r\n    <li\r\n      data-slot=\"breadcrumb-item\"\r\n      className={cn(\"inline-flex items-center gap-1\", className)}\r\n      {...props}\r\n    />\r\n  )\r\n}\r\n\r\n/*\r\n * A plain anchor, not RAC's Link.\r\n *\r\n * RAC's Link adds press handling for mouse, touch and keyboard, which is what you want for\r\n * a control. A breadcrumb is navigation: it should be a real anchor so middle-click,\r\n * open-in-new-tab and copy-link all work. `render` is honoured by cloning, since RAC has no\r\n * Slot to hand props to someone else's element.\r\n */\r\nfunction BreadcrumbLink({\r\n  className,\r\n  render,\r\n  children,\r\n  ...props\r\n}: React.ComponentProps<\"a\"> & { render?: React.ReactElement }) {\r\n  const classes = cn(\"transition-colors hover:text-foreground\", className)\r\n\r\n  if (render) {\r\n    const childProps = render.props as { className?: string }\r\n    return React.cloneElement(render, {\r\n      ...props,\r\n      \"data-slot\": \"breadcrumb-link\",\r\n      className: cn(classes, childProps.className),\r\n    } as Record<string, unknown>)\r\n  }\r\n\r\n  return (\r\n    <a data-slot=\"breadcrumb-link\" className={classes} {...props}>\r\n      {children}\r\n    </a>\r\n  )\r\n}\r\n\r\nfunction BreadcrumbPage({ className, ...props }: React.ComponentProps<\"span\">) {\r\n  return (\r\n    <span\r\n      data-slot=\"breadcrumb-page\"\r\n      role=\"link\"\r\n      aria-disabled=\"true\"\r\n      aria-current=\"page\"\r\n      className={cn(\"font-normal text-foreground\", className)}\r\n      {...props}\r\n    />\r\n  )\r\n}\r\n\r\nfunction BreadcrumbSeparator({\r\n  children,\r\n  className,\r\n  ...props\r\n}: React.ComponentProps<\"li\">) {\r\n  return (\r\n    <li\r\n      data-slot=\"breadcrumb-separator\"\r\n      role=\"presentation\"\r\n      aria-hidden=\"true\"\r\n      className={cn(\"[&>svg]:size-3.5\", className)}\r\n      {...props}\r\n    >\r\n      {children ?? (\r\n        <ChevronRightIcon />\r\n      )}\r\n    </li>\r\n  )\r\n}\r\n\r\nfunction BreadcrumbEllipsis({\r\n  className,\r\n  ...props\r\n}: React.ComponentProps<\"span\">) {\r\n  return (\r\n    <span\r\n      data-slot=\"breadcrumb-ellipsis\"\r\n      role=\"presentation\"\r\n      aria-hidden=\"true\"\r\n      className={cn(\r\n        \"flex size-5 items-center justify-center [&>svg]:size-4\",\r\n        className\r\n      )}\r\n      {...props}\r\n    >\r\n      <MoreHorizontalIcon\r\n      />\r\n      <span className=\"sr-only\">More</span>\r\n    </span>\r\n  )\r\n}\r\n\r\nexport {\r\n  Breadcrumb,\r\n  BreadcrumbList,\r\n  BreadcrumbItem,\r\n  BreadcrumbLink,\r\n  BreadcrumbPage,\r\n  BreadcrumbSeparator,\r\n  BreadcrumbEllipsis,\r\n}\r\n",
+      "type": "registry:ui"
+    }
+  ]
+}
