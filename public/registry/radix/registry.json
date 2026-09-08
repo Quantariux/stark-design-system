@@ -43,6 +43,18 @@
       ]
     },
     {
+      "name": "breadcrumb",
+      "type": "registry:ui",
+      "dependencies": [
+        "@radix-ui/react-slot",
+        "cn",
+        "lucide-react"
+      ],
+      "registryDependencies": [
+        "https://stark-design-system.vercel.app/registry/radix/theme.json"
+      ]
+    },
+    {
       "name": "button",
       "type": "registry:ui",
       "dependencies": [
@@ -77,6 +89,29 @@
       ]
     },
     {
+      "name": "dialog",
+      "type": "registry:ui",
+      "dependencies": [
+        "@radix-ui/react-dialog",
+        "cn",
+        "lucide-react"
+      ],
+      "registryDependencies": [
+        "https://stark-design-system.vercel.app/registry/radix/button.json",
+        "https://stark-design-system.vercel.app/registry/radix/theme.json"
+      ]
+    },
+    {
+      "name": "input",
+      "type": "registry:ui",
+      "dependencies": [
+        "cn"
+      ],
+      "registryDependencies": [
+        "https://stark-design-system.vercel.app/registry/radix/theme.json"
+      ]
+    },
+    {
       "name": "label",
       "type": "registry:ui",
       "dependencies": [
@@ -95,6 +130,28 @@
       ],
       "registryDependencies": [
         "https://stark-design-system.vercel.app/registry/radix/button.json",
+        "https://stark-design-system.vercel.app/registry/radix/theme.json"
+      ]
+    },
+    {
+      "name": "popover",
+      "type": "registry:ui",
+      "dependencies": [
+        "@radix-ui/react-popover",
+        "cn"
+      ],
+      "registryDependencies": [
+        "https://stark-design-system.vercel.app/registry/radix/theme.json"
+      ]
+    },
+    {
+      "name": "radio-group",
+      "type": "registry:ui",
+      "dependencies": [
+        "@radix-ui/react-radio-group",
+        "cn"
+      ],
+      "registryDependencies": [
         "https://stark-design-system.vercel.app/registry/radix/theme.json"
       ]
     },
@@ -163,6 +220,17 @@
       ]
     },
     {
+      "name": "tooltip",
+      "type": "registry:ui",
+      "dependencies": [
+        "@radix-ui/react-tooltip",
+        "cn"
+      ],
+      "registryDependencies": [
+        "https://stark-design-system.vercel.app/registry/radix/theme.json"
+      ]
+    },
+    {
       "name": "dashboard",
       "type": "registry:block",
       "dependencies": [
@@ -174,6 +242,22 @@
         "https://stark-design-system.vercel.app/registry/radix/button.json",
         "https://stark-design-system.vercel.app/registry/radix/card.json",
         "https://stark-design-system.vercel.app/registry/radix/table.json"
+      ]
+    },
+    {
+      "name": "detail",
+      "type": "registry:block",
+      "dependencies": [
+        "lucide-react"
+      ],
+      "registryDependencies": [
+        "https://stark-design-system.vercel.app/registry/radix/avatar.json",
+        "https://stark-design-system.vercel.app/registry/radix/badge.json",
+        "https://stark-design-system.vercel.app/registry/radix/breadcrumb.json",
+        "https://stark-design-system.vercel.app/registry/radix/button.json",
+        "https://stark-design-system.vercel.app/registry/radix/card.json",
+        "https://stark-design-system.vercel.app/registry/radix/separator.json",
+        "https://stark-design-system.vercel.app/registry/radix/tabs.json"
       ]
     }
   ]

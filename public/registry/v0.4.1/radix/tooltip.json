@@ -1,0 +1,19 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "tooltip",
+  "type": "registry:ui",
+  "dependencies": [
+    "@radix-ui/react-tooltip",
+    "cn"
+  ],
+  "registryDependencies": [
+    "https://stark-design-system.vercel.app/registry/v0.4.1/radix/theme.json"
+  ],
+  "files": [
+    {
+      "path": "components/ui/tooltip.tsx",
+      "content": "\"use client\"\n\nimport * as TooltipPrimitive from \"@radix-ui/react-tooltip\"\nimport * as React from \"react\"\nimport { cn } from \"cn\"\n\n/**\n * TooltipProvider shares one delay timer across every tooltip beneath it.\n *\n * Without it each tooltip waits its own full delay, so moving along a toolbar makes you\n * pay the delay again at every stop. With it, the first tooltip opens after the delay and\n * neighbours open immediately — which is the behaviour people read as responsive.\n *\n * Base UI calls the prop `delay`; Radix calls it `delayDuration`. The system's name wins,\n * so a consumer switching primitives does not rewrite their call sites.\n */\nfunction TooltipProvider({\n  delay = 400,\n  ...props\n}: Omit<React.ComponentProps<typeof TooltipPrimitive.Provider>, \"delayDuration\"> & {\n  delay?: number\n}) {\n  return <TooltipPrimitive.Provider delayDuration={delay} {...props} />\n}\n\nfunction Tooltip(props: React.ComponentProps<typeof TooltipPrimitive.Root>) {\n  return <TooltipPrimitive.Root {...props} />\n}\n\n/*\n * `render` is this system's composition API on every primitive; Radix spells it `asChild`.\n * Translating here is what lets one story file and one block source work against all three\n * trees rather than each consumer learning which primitive they are on.\n */\nfunction TooltipTrigger({\n  className,\n  render,\n  children,\n  ...props\n}: React.ComponentProps<typeof TooltipPrimitive.Trigger> & {\n  render?: React.ReactElement\n}) {\n  return (\n    <TooltipPrimitive.Trigger\n      data-slot=\"tooltip-trigger\"\n      className={cn(className)}\n      asChild={Boolean(render)}\n      {...props}\n    >\n      {render ?? children}\n    </TooltipPrimitive.Trigger>\n  )\n}\n\n/*\n * Portal is folded in rather than exposed: forgetting it is how a tooltip ends up clipped\n * inside an `overflow: hidden` ancestor, which only shows up once the component is used\n * somewhere scrollable. Radix positions inside Content, so there is no Positioner here.\n *\n * The exit animation moves from Base UI's data-ending-style to Radix's data-state=closed.\n * There is no enter equivalent — Radix sets data-state=open immediately rather than\n * exposing a from-state — so the tooltip appears at once and fades on close.\n */\nfunction TooltipContent({\n  className,\n  sideOffset = 6,\n  children,\n  ...props\n}: React.ComponentProps<typeof TooltipPrimitive.Content>) {\n  return (\n    <TooltipPrimitive.Portal>\n      <TooltipPrimitive.Content\n        data-slot=\"tooltip-content\"\n        sideOffset={sideOffset}\n        className={cn(\n          \"z-50 w-fit max-w-xs origin-(--radix-tooltip-content-transform-origin) rounded-md bg-primary px-2 py-1 text-xs text-balance text-primary-foreground shadow-md transition-[transform,scale,opacity] data-[state=closed]:scale-95 data-[state=closed]:opacity-0\",\n          className\n        )}\n        {...props}\n      >\n        {children}\n      </TooltipPrimitive.Content>\n    </TooltipPrimitive.Portal>\n  )\n}\n\nexport { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider }\n",
+      "type": "registry:ui"
+    }
+  ]
+}
