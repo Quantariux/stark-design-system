@@ -2,7 +2,7 @@
   "$schema": "https://ui.shadcn.com/schema/registry.json",
   "name": "stark",
   "homepage": "https://stark-design-system.vercel.app",
-  "version": "0.4.1",
+  "version": "0.5.0",
   "items": [
     {
       "name": "theme",
@@ -81,6 +81,17 @@
       "type": "registry:ui",
       "dependencies": [
         "@radix-ui/react-checkbox",
+        "cn",
+        "lucide-react"
+      ],
+      "registryDependencies": [
+        "https://stark-design-system.vercel.app/registry/radix/theme.json"
+      ]
+    },
+    {
+      "name": "command",
+      "type": "registry:ui",
+      "dependencies": [
         "cn",
         "lucide-react"
       ],
@@ -330,6 +341,17 @@
         "https://stark-design-system.vercel.app/registry/radix/input.json",
         "https://stark-design-system.vercel.app/registry/radix/progress.json",
         "https://stark-design-system.vercel.app/registry/radix/textarea.json"
+      ]
+    },
+    {
+      "name": "search",
+      "type": "registry:block",
+      "dependencies": [],
+      "registryDependencies": [
+        "https://stark-design-system.vercel.app/registry/radix/badge.json",
+        "https://stark-design-system.vercel.app/registry/radix/command.json",
+        "https://stark-design-system.vercel.app/registry/radix/pagination.json",
+        "https://stark-design-system.vercel.app/registry/radix/separator.json"
       ]
     },
     {

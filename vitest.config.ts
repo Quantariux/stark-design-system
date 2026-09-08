@@ -12,7 +12,6 @@ const dirname =
   typeof __dirname !== 'undefined' ? __dirname : path.dirname(fileURLToPath(import.meta.url));
 
 const uiDir = path.join(dirname, 'src/components/ui');
-const storiesDir = path.join(dirname, 'src/stories');
 
 /*
  * One test project per primitive, running the same stories.

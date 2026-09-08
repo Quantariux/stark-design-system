@@ -1,0 +1,19 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "separator",
+  "type": "registry:ui",
+  "dependencies": [
+    "@base-ui/react",
+    "cn"
+  ],
+  "registryDependencies": [
+    "https://stark-design-system.vercel.app/registry/v0.5.0/theme.json"
+  ],
+  "files": [
+    {
+      "path": "components/ui/separator.tsx",
+      "content": "import { Separator as SeparatorPrimitive } from \"@base-ui/react/separator\"\nimport { cn } from \"cn\"\n\n/**\n * A visual divider.\n *\n * The primitive sets `role=\"separator\"` and the orientation, so a decorative rule and a\n * meaningful one are distinguishable to assistive technology rather than both being an\n * anonymous bordered div.\n */\nfunction Separator({\n  className,\n  orientation = \"horizontal\",\n  ...props\n}: SeparatorPrimitive.Props) {\n  return (\n    <SeparatorPrimitive\n      data-slot=\"separator\"\n      orientation={orientation}\n      className={cn(\n        \"shrink-0 bg-border data-[orientation=horizontal]:h-px data-[orientation=horizontal]:w-full data-[orientation=vertical]:h-full data-[orientation=vertical]:w-px\",\n        className\n      )}\n      {...props}\n    />\n  )\n}\n\nexport { Separator }\n",
+      "type": "registry:ui"
+    }
+  ]
+}

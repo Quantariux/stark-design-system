@@ -10,7 +10,7 @@ project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - `https://stark-design-system.vercel.app/registry/{name}.json` always reflects the latest
   deploy. Convenient, and it means a component can change under a project without anything
   in that project having changed.
-- `https://stark-design-system.vercel.app/registry/v0.4.1/{name}.json` is written once per
+- `https://stark-design-system.vercel.app/registry/v0.5.0/{name}.json` is written once per
   release and never rewritten. Point `components.json` at that one.
 
 A git tag pins this repository; it does not pin what `shadcn add` downloads into someone
@@ -48,6 +48,48 @@ else's app. The versioned path is what does.
 
 - 19 components remain to port, twice over. Blocks need no porting: they compose
   `@/components/ui/*` by alias, so one block source serves every variant.
+
+## [0.5.0] - 2026-09-07
+
+### Added
+
+- **A registry tree per primitive, and the Radix tree is complete.** `/registry/` serves
+  Base UI, `/registry/radix/` serves Radix, `/registry/aria/` serves React Aria, each with
+  a pinned twin. A project picks its primitive by choosing a URL, because the project
+  already has one installed and handing it a second is how a codebase ends up with two
+  focus-management models. The bare path still serves Base UI, so existing consumers are
+  unaffected.
+
+  This exists because forcing one primitive was wrong about the consumers: of 17 projects
+  checked, 5 run Base UI, 3 run Radix and 4 have both installed. Seven would have received
+  the wrong primitive.
+
+- **All 19 primitive-backed components ported to Radix** — 32 items, all five blocks, and
+  the same 26 story files and 80 assertions that guard Base UI. The variants are held to
+  being equivalent rather than separately correct: the stories are shared, aliased per
+  project, so a port that changes focus order or drops an aria attribute fails the same
+  assertion.
+
+### Changed
+
+- **`check:usage` enforces one primitive per variant, not one per repository.** The real
+  constraint was never "Base UI everywhere" — it is that a single *installed* tree must not
+  mix primitives, and that holds per variant. A Radix import is correct inside
+  `src/variants/radix` and a bug anywhere else, including in a block.
+
+### Notes
+
+- **The React Aria tree is deliberately partial** — 7 items, the components that touch no
+  primitive. Anything wrapping a primitive appears only once ported; serving the Base UI
+  file from an `/aria/` path would be a lie the consumer discovers at runtime.
+
+- **Three components could not be translated and were rebuilt.** Radix has no toast queue,
+  so the manager behind `useToast()` is reimplemented on its declarative primitives. Its
+  Form is built on native constraint validation with `match` predicates and has no
+  Description part, so adopting it would have changed the public API — the one thing a
+  variant may not do. And it has no combobox at all: `command` is implemented directly
+  against the ARIA combobox pattern rather than on `cmdk`, which filters internally and
+  would filter a second time over a list the caller has already filtered.
 
 ## [0.4.1] - 2026-09-07
 

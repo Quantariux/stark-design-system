@@ -1,0 +1,19 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "tooltip",
+  "type": "registry:ui",
+  "dependencies": [
+    "@base-ui/react",
+    "cn"
+  ],
+  "registryDependencies": [
+    "https://stark-design-system.vercel.app/registry/v0.5.0/theme.json"
+  ],
+  "files": [
+    {
+      "path": "components/ui/tooltip.tsx",
+      "content": "\"use client\"\n\nimport { Tooltip as TooltipPrimitive } from \"@base-ui/react/tooltip\"\nimport { cn } from \"cn\"\n\n/**\n * TooltipProvider shares one delay timer across every tooltip beneath it.\n *\n * Without it each tooltip waits its own full delay, so moving along a toolbar makes you\n * pay the delay again at every stop. With it, the first tooltip opens after the delay and\n * neighbours open immediately — which is the behaviour people read as responsive.\n */\nfunction TooltipProvider({\n  delay = 400,\n  ...props\n}: TooltipPrimitive.Provider.Props) {\n  return <TooltipPrimitive.Provider delay={delay} {...props} />\n}\n\nfunction Tooltip(props: TooltipPrimitive.Root.Props) {\n  return <TooltipPrimitive.Root {...props} />\n}\n\nfunction TooltipTrigger({ className, ...props }: TooltipPrimitive.Trigger.Props) {\n  return (\n    <TooltipPrimitive.Trigger\n      data-slot=\"tooltip-trigger\"\n      className={cn(className)}\n      {...props}\n    />\n  )\n}\n\nfunction TooltipContent({\n  className,\n  sideOffset = 6,\n  children,\n  ...props\n}: TooltipPrimitive.Popup.Props & { sideOffset?: number }) {\n  return (\n    <TooltipPrimitive.Portal>\n      <TooltipPrimitive.Positioner sideOffset={sideOffset}>\n        <TooltipPrimitive.Popup\n          data-slot=\"tooltip-content\"\n          className={cn(\n            \"z-50 w-fit max-w-xs origin-(--transform-origin) rounded-md bg-primary px-2 py-1 text-xs text-balance text-primary-foreground shadow-md transition-[transform,scale,opacity] data-ending-style:scale-95 data-ending-style:opacity-0 data-starting-style:scale-95 data-starting-style:opacity-0\",\n            className\n          )}\n          {...props}\n        >\n          {children}\n        </TooltipPrimitive.Popup>\n      </TooltipPrimitive.Positioner>\n    </TooltipPrimitive.Portal>\n  )\n}\n\nexport { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider }\n",
+      "type": "registry:ui"
+    }
+  ]
+}
