@@ -114,6 +114,16 @@
       ]
     },
     {
+      "name": "form",
+      "type": "registry:ui",
+      "dependencies": [
+        "cn"
+      ],
+      "registryDependencies": [
+        "https://stark-design-system.vercel.app/registry/v0.4.1/radix/theme.json"
+      ]
+    },
+    {
       "name": "input",
       "type": "registry:ui",
       "dependencies": [
@@ -173,6 +183,18 @@
       "dependencies": [
         "@radix-ui/react-radio-group",
         "cn"
+      ],
+      "registryDependencies": [
+        "https://stark-design-system.vercel.app/registry/v0.4.1/radix/theme.json"
+      ]
+    },
+    {
+      "name": "select",
+      "type": "registry:ui",
+      "dependencies": [
+        "@radix-ui/react-select",
+        "cn",
+        "lucide-react"
       ],
       "registryDependencies": [
         "https://stark-design-system.vercel.app/registry/v0.4.1/radix/theme.json"
@@ -243,6 +265,18 @@
       ]
     },
     {
+      "name": "toast",
+      "type": "registry:ui",
+      "dependencies": [
+        "@radix-ui/react-toast",
+        "cn",
+        "lucide-react"
+      ],
+      "registryDependencies": [
+        "https://stark-design-system.vercel.app/registry/v0.4.1/radix/theme.json"
+      ]
+    },
+    {
       "name": "tooltip",
       "type": "registry:ui",
       "dependencies": [
@@ -281,6 +315,38 @@
         "https://stark-design-system.vercel.app/registry/v0.4.1/radix/card.json",
         "https://stark-design-system.vercel.app/registry/v0.4.1/radix/separator.json",
         "https://stark-design-system.vercel.app/registry/v0.4.1/radix/tabs.json"
+      ]
+    },
+    {
+      "name": "onboarding",
+      "type": "registry:block",
+      "dependencies": [
+        "lucide-react"
+      ],
+      "registryDependencies": [
+        "https://stark-design-system.vercel.app/registry/v0.4.1/radix/button.json",
+        "https://stark-design-system.vercel.app/registry/v0.4.1/radix/card.json",
+        "https://stark-design-system.vercel.app/registry/v0.4.1/radix/form.json",
+        "https://stark-design-system.vercel.app/registry/v0.4.1/radix/input.json",
+        "https://stark-design-system.vercel.app/registry/v0.4.1/radix/progress.json",
+        "https://stark-design-system.vercel.app/registry/v0.4.1/radix/textarea.json"
+      ]
+    },
+    {
+      "name": "settings",
+      "type": "registry:block",
+      "dependencies": [],
+      "registryDependencies": [
+        "https://stark-design-system.vercel.app/registry/v0.4.1/radix/button.json",
+        "https://stark-design-system.vercel.app/registry/v0.4.1/radix/card.json",
+        "https://stark-design-system.vercel.app/registry/v0.4.1/radix/form.json",
+        "https://stark-design-system.vercel.app/registry/v0.4.1/radix/input.json",
+        "https://stark-design-system.vercel.app/registry/v0.4.1/radix/label.json",
+        "https://stark-design-system.vercel.app/registry/v0.4.1/radix/separator.json",
+        "https://stark-design-system.vercel.app/registry/v0.4.1/radix/switch.json",
+        "https://stark-design-system.vercel.app/registry/v0.4.1/radix/tabs.json",
+        "https://stark-design-system.vercel.app/registry/v0.4.1/radix/textarea.json",
+        "https://stark-design-system.vercel.app/registry/v0.4.1/radix/toast.json"
       ]
     }
   ]
